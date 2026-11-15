@@ -20,8 +20,8 @@ export function createDefaultData(): AppData {
       { id: 'account-2', bank: '义乌农商银行', type: '电子账户', number: '623540****9007', balance: 0, image: '/assets/reference/account-electronic-card.png' },
     ],
     transactions: [
-      { id: 'transaction-out', title: '受托支付', amount: -3400000, balance: 26.41, date: '2026-10-16 14:39:09', counterparty: '演示收款人', account: '62848****1877', channel: '移动前台系统（丰收互联）', branch: '义乌农商银行城站分理处', purpose: '受托支付' },
-      { id: 'transaction-in', title: '互联网放', amount: 3400000, balance: 3400026.41, date: '2026-10-16 14:39:09', counterparty: '演示用户', account: '501017****6250', channel: '移动前台系统（丰收互联）', branch: '义乌农商银行城站分理处', purpose: '互联网放款' },
+      { id: 'transaction-out', title: '受托支付', amount: -3400000, balance: 26.41, date: '2026-10-16 14:39:09', counterparty: '收款人', account: '62848****1877', channel: '移动前台系统（丰收互联）', branch: '义乌农商银行城站分理处', purpose: '受托支付' },
+      { id: 'transaction-in', title: '互联网放', amount: 3400000, balance: 3400026.41, date: '2026-10-16 14:39:09', counterparty: '用户', account: '501017****6250', channel: '移动前台系统（丰收互联）', branch: '义乌农商银行城站分理处', purpose: '互联网放款' },
     ],
     images: {},
   };
@@ -84,8 +84,13 @@ export const newId = (prefix: string) => `${prefix}-${globalThis.crypto?.randomU
 function initialState(): { data: AppData; error: string | null } {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return { data: stored ? validateData(JSON.parse(stored)) : createDefaultData(), error: null };
-  } catch { return { data: createDefaultData(), error: '本地数据无法读取，已载入默认演示数据。' }; }
+    const data = stored ? validateData(JSON.parse(stored)) : createDefaultData();
+    for (const transaction of data.transactions) {
+      if (transaction.id === 'transaction-out' && transaction.counterparty === '演示收款人') transaction.counterparty = '收款人';
+      if (transaction.id === 'transaction-in' && transaction.counterparty === '演示用户') transaction.counterparty = '用户';
+    }
+    return { data, error: null };
+  } catch { return { data: createDefaultData(), error: '本地数据无法读取，已载入默认数据。' }; }
 }
 
 export function useStore() {

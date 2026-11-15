@@ -69,3 +69,10 @@ When any text-entry control loses focus, dismiss the simulated keyboard. If the 
 - Fixed phone chrome should not animate with pushed screens. Screen content can animate; the status bar, camera cutout, and preview chrome should stay put.
 - Keep the keyboard below the home indicator/safe area layer in z-index, and above ordinary app UI while visible.
 - Keep the home indicator as the topmost safe-area layer in the z-index above everything else in the prototype.
+
+## App Copy Preference
+
+- 页面、安装名称和启动图标不显示“演示”字样；功能说明使用准确的本地存储及流程描述。
+
+- 资产、智能账单标题旁不显示“数据仅供参考”文字，保留详情入口及无障碍名称。
+- 应用安装名称使用“丰收互联”，启动图标参考用户上传的白底蓝绿多边形圆形河流图。

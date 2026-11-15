@@ -1,17 +1,17 @@
-# 丰收互联（演示）交付说明
+# 丰收互联交付说明
 
-本项目是依据用户截图制作的本地金融界面演示。安装名称为“丰收互联（演示）”，页面固定显示演示标识。登录、转账、借款、还款均为本地演示交互，不连接银行系统。
+本项目是依据用户截图制作的本地金融界面演示。安装名称为“丰收互联”，页面、登录和管理文案中的“演示”字样已清理。登录、转账、借款、还款均为本地演示交互，不连接银行系统。
 
 ## 使用
 
 - 预览：运行中的 http://localhost:4173/ （带设备预览外壳）。
 - 原生应用入口：app/native.html；Android/iOS 包使用该全屏入口。
 - 长按金额、账户卡片、贷款记录、交易记录或图片约 600 毫秒进入编辑器；电脑也可使用右键。
-- 在“我的 → 演示数据管理”可以新增账户、贷款、交易，导入导出 JSON，恢复默认数据。页面常驻的长按提示已移除，长按功能保留。
+- 在“我的 → 数据管理”可以新增账户、贷款、交易，导入导出 JSON，恢复默认数据。页面常驻的长按提示已移除，长按功能保留。
 - 图片可以选择本机 PNG/JPEG/WebP/GIF/AVIF，替换后压缩保存在本机；HEIC 尚未验证。
 - 本机存储正常时，修改在重启后保留。卸载应用会清除本机数据，请先导出备份。
 - 原生端导出提供 JSON 文本及复制操作；请将内容另存为 JSON。导入使用系统文件选择器。
-- 本地登录可填写演示账号及演示密码，勾选演示使用说明后进入；密码不持久化。未登录只能浏览首页，打开其他页面、执行操作或编辑图片/数据均先进入登录。登录成功会继续原来的目标页面或编辑任务；退出清除页面历史和金额显隐状态并返回首页。登录状态是本地演示门禁，不是银行身份验证。
+- 本地登录可填写本地账号及密码，勾选本地使用说明后进入；密码不持久化。未登录只能浏览首页，打开其他页面、执行操作或编辑图片/数据均先进入登录。登录成功会继续原来的目标页面或编辑任务；退出清除页面历史和金额显隐状态并返回首页。登录状态是本地演示门禁，不是银行身份验证。
 
 ## 页面范围
 
@@ -42,6 +42,14 @@ APK 已验证签名及打包内容；IPA 已验证 ZIP CRC、Info.plist、iphone
 
 提交不包含 node_modules、构建缓存、签名密钥、原始手机截图或机器凭证。安装包保存在本机 artifacts 和 Actions Artifacts 中。
 
-## 图标与身份
+## 图标与名称（v1.2）
 
-参考截图中“丰收互联”的蓝绿配色，使用原创河流图标并在底部保留大号“演示”，不使用与官方银行不可区分的图标。源图：app/public/assets/app-icon-demo.png。图标使用内置 Image Gen 生成，提示词为：原创蓝绿圆形景观与白色弯曲河流，底部 32% 深蓝横条、大号白色“演示”，无官方银行名称或同形标志。各平台仅做尺寸缩放。应用名称和页面演示标记保留。
+安装名称为“丰收互联”。启动图标以用户上传的手机桌面截图中第二排第四个图标为参考，使用内置 Image Gen 提取并规范白色方形背景；源图为 app/public/assets/app-icon.png。截图分辨率有限，图案按参考重建，非逐像素原始图标文件。Android 常规、圆形、自适应与 iOS 1024px 图标均由脚本生成，原生版本为 1.2 (3)。
+
+图标提取提示词：Use the supplied iPhone home screen screenshot as the edit target. Extract only the app icon at row 2, column 4 labelled 丰收互联, located approximately x=988..1191, y=573..775 in the 1290x2796 screenshot. Return one clean square app icon, no phone screen, no app name label and no other apps. Faithfully preserve the icon's white background, centered circular low-poly blue-and-green globe and the exact winding white river across it. Do not substitute the previous smooth landscape design. Keep the polygon colors, river silhouette, orientation, proportions and placement faithful to the uploaded icon. Extend the white corner background into a full opaque white square suitable for an iOS/Android app icon, with the globe occupying approximately 78% of the square width. No text, letters, labels, shadows, borders or extra marks.
+
+背景修正提示词：Fix this app icon asset only: replace ALL black corner pixels outside the rounded white square with pure white (#FFFFFF), so the final image is a full flat opaque white square with no rounded outer boundary, no black corners and no transparency. Preserve the centered blue/green low-poly circle and its white winding river exactly as they are, unchanged in position, proportions, polygon colors, river silhouette and detail. No text. This is an icon export normalization, not a redesign.
+
+## 2026-11-15 文案与打包更新
+
+已移除页面角标、可见文案中的“演示”字样和资产、账单标题旁的“数据仅供参考”文字，保留账单详情入口和无障碍名称。Web 与原生资源已构建并同步；当前安装包版本与构建来源以 artifacts 下的验证记录为准。APK 为调试签名版本；IPA 为 iphoneos / arm64 未签名版本，需要签名后安装。

@@ -1,14 +1,14 @@
-"""Produce launcher density variants from the supplied, clearly labelled demo icon."""
+"""Produce launcher density variants from the supplied app icon."""
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import hashlib
 import json
 
 ROOT = Path(__file__).resolve().parent.parent
-SOURCE = ROOT / 'public/assets/app-icon-demo.png'
+SOURCE = ROOT / 'public/assets/app-icon.png'
 image = Image.open(SOURCE).convert('RGB')
 res = ROOT / 'android/app/src/main/res'
-background = '#020744'
+background = '#ffffff'
 outputs = []
 
 
@@ -26,9 +26,9 @@ for density, scale in [('mdpi', 1), ('hdpi', 1.5), ('xhdpi', 2), ('xxhdpi', 3), 
     side = round(48 * scale)
     save(image.resize((side, side), Image.Resampling.LANCZOS), folder / 'ic_launcher.png')
 
-    # Keep the full lettering inside a circle rather than cutting off its bottom corners.
+    # Keep the full landscape inside the round launcher mask.
     large = Image.new('RGB', (side * 4, side * 4), background)
-    fit = round(side * 4 * 0.84)
+    fit = round(side * 4)
     offset = (side * 4 - fit) // 2
     large.paste(image.resize((fit, fit), Image.Resampling.LANCZOS), (offset, offset))
     mask = Image.new('L', large.size, 0)
@@ -37,9 +37,9 @@ for density, scale in [('mdpi', 1), ('hdpi', 1.5), ('xhdpi', 2), ('xxhdpi', 3), 
     rounded.putalpha(mask)
     save(rounded.resize((side, side), Image.Resampling.LANCZOS), folder / 'ic_launcher_round.png')
 
-    # A 56dp full image inside the 108dp layer keeps the entire demo wording in the safe area.
+    # A 72dp image keeps the central globe within the adaptive icon safe area.
     canvas_side = round(108 * scale)
-    fit = round(56 * scale)
+    fit = round(72 * scale)
     foreground = Image.new('RGBA', (canvas_side, canvas_side), (0, 0, 0, 0))
     offset = (canvas_side - fit) // 2
     foreground.paste(image.resize((fit, fit), Image.Resampling.LANCZOS).convert('RGBA'), (offset, offset))
@@ -56,7 +56,7 @@ report = {
     'source_size': list(image.size),
     'source_sha256': hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
     'adaptive_foreground_dp': 108,
-    'adaptive_image_dp': 56,
+    'adaptive_image_dp': 72,
     'outputs': outputs,
 }
 (ROOT / 'native-icons-manifest.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
@@ -70,7 +70,7 @@ for col, side in enumerate([48, 72, 96, 144]):
     x = col * 160 + (160 - side) // 2
     sheet.paste(image.resize((side, side), Image.Resampling.LANCZOS), (x, 35))
     circle = Image.new('RGBA', (side, side), background)
-    fit = round(side * 56 / 72)
+    fit = side
     circle.paste(image.resize((fit, fit), Image.Resampling.LANCZOS), ((side - fit) // 2,) * 2)
     mask = Image.new('L', (side, side), 0)
     ImageDraw.Draw(mask).ellipse((0, 0, side - 1, side - 1), fill=255)

@@ -15,7 +15,7 @@ const fields: Record<string, Field[]> = {
   account: [{ name: 'bank', label: '银行名称' }, { name: 'type', label: '账户类型' }, { name: 'number', label: '显示卡号' }, { name: 'balance', label: '可用余额（元）', number: true }],
   transaction: [{ name: 'title', label: '摘要类型' }, { name: 'amount', label: '交易金额（收入为正，支出为负）', number: true }, { name: 'balance', label: '交易后余额（元）', number: true }, { name: 'date', label: '交易时间（YYYY-MM-DD HH:mm:ss）' }, { name: 'counterparty', label: '对方姓名' }, { name: 'account', label: '对方账号' }, { name: 'channel', label: '交易渠道' }, { name: 'branch', label: '交易网点' }, { name: 'purpose', label: '用途' }],
 };
-const titles: Record<EditTarget['kind'], string> = { profile: '编辑个人资料', summary: '编辑贷款汇总', loan: '编辑贷款', account: '编辑账户', transaction: '编辑交易', image: '编辑图片', manage: '管理演示数据' };
+const titles: Record<EditTarget['kind'], string> = { profile: '编辑个人资料', summary: '编辑贷款汇总', loan: '编辑贷款', account: '编辑账户', transaction: '编辑交易', image: '编辑图片', manage: '管理数据' };
 
 async function copyBackup(text: string): Promise<void> {
   try {
@@ -40,7 +40,7 @@ function startingValue(target: EditTarget, store: Store): Record<string, string>
   if (target.kind === 'summary') source = store.data.loanSummary;
   if (target.kind === 'loan') source = store.data.loans.find(item => item.id === target.id) || { ...defaults.loans[0], id: newId('loan'), principal: 0, available: 0, start: today };
   if (target.kind === 'account') source = store.data.accounts.find(item => item.id === target.id) || { ...defaults.accounts[0], id: newId('account'), number: '****0000', balance: 0 };
-  if (target.kind === 'transaction') source = store.data.transactions.find(item => item.id === target.id) || { ...defaults.transactions[0], id: newId('transaction'), title: '转入', amount: 0, balance: 0, date: `${today} 12:00:00`, counterparty: '演示用户', purpose: '演示交易' };
+  if (target.kind === 'transaction') source = store.data.transactions.find(item => item.id === target.id) || { ...defaults.transactions[0], id: newId('transaction'), title: '转入', amount: 0, balance: 0, date: `${today} 12:00:00`, counterparty: '用户', purpose: '交易' };
   return Object.fromEntries(Object.entries(source).map(([key, value]) => [key, String(value)]));
 }
 
@@ -67,8 +67,8 @@ function EditorBody({ target, onClose, store, native, dismissKeyboard }: Props &
     const json = store.exportData(); setExportJson(json);
     if (native) { setNotice('数据已生成，可复制保存。'); return; }
     const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
-    const anchor = document.createElement('a'); anchor.href = url; anchor.download = '丰收演示数据.json'; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
-    setNotice('已导出演示数据。');
+    const anchor = document.createElement('a'); anchor.href = url; anchor.download = '丰收互联数据.json'; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setNotice('已导出数据。');
   };
   const importFile = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.[0]; event.currentTarget.value = '';
@@ -78,7 +78,7 @@ function EditorBody({ target, onClose, store, native, dismissKeyboard }: Props &
     catch { setNotice('文件读取失败，请重试。'); }
   };
   return <div className="demo-editor-content">
-    <div className="demo-editor-heading"><h2>管理演示数据</h2><button type="button" onClick={onClose} aria-label="关闭编辑器">关闭</button></div>
+    <div className="demo-editor-heading"><h2>管理数据</h2><button type="button" onClick={onClose} aria-label="关闭编辑器">关闭</button></div>
     <p className="demo-editor-help">本机保存，重启后保留。</p>
     <div className="demo-editor-actions">
       <button onClick={() => setSelected({ kind: 'profile' })}>个人资料与资产</button><button onClick={() => setSelected({ kind: 'summary' })}>贷款汇总</button>
@@ -89,7 +89,7 @@ function EditorBody({ target, onClose, store, native, dismissKeyboard }: Props &
       <h3>交易（{store.data.transactions.length}）</h3>{store.data.transactions.map(item => <button key={item.id} onClick={() => setSelected({ kind: 'transaction', id: item.id })}>{item.title} {item.date.slice(0, 10)}<span>编辑</span></button>)}
     </div>
     <div className="demo-editor-actions"><button onClick={exportFile}>导出 JSON 备份</button><label className="demo-file-button">导入 JSON 备份<input type="file" accept="application/json,.json" aria-label="导入 JSON 备份" onChange={importFile} /></label>
-      <button className="demo-danger" onClick={() => { if (resetConfirm) { if (store.reset()) { setNotice('已恢复默认演示数据。'); setResetConfirm(false); } } else setResetConfirm(true); }}>{resetConfirm ? '确认恢复默认（会替换本机数据）' : '恢复默认数据'}</button>
+      <button className="demo-danger" onClick={() => { if (resetConfirm) { if (store.reset()) { setNotice('已恢复默认数据。'); setResetConfirm(false); } } else setResetConfirm(true); }}>{resetConfirm ? '确认恢复默认（会替换本机数据）' : '恢复默认数据'}</button>
       {resetConfirm ? <button onClick={() => setResetConfirm(false)}>取消恢复</button> : null}
     </div>
     {exportJson ? <div className="demo-export"><p>JSON 备份</p><textarea aria-label="导出的 JSON 数据" value={exportJson} readOnly rows={5} /><button onClick={async () => { try { await copyBackup(exportJson); setNotice('已复制备份。'); } catch { setNotice('无法自动复制，请选中上方文本手动复制。'); } }}>复制备份</button></div> : null}
@@ -145,7 +145,7 @@ function DataForm({ target, onClose, store, native }: Props & { target: EditTarg
   const inputProps = (field: Field): InputHTMLAttributes<HTMLInputElement> => ({ id: `edit-${field.name}`, name: field.name, type: field.type || 'text', inputMode: field.number ? 'decimal' : undefined, value: values[field.name] || '', maxLength: 300, onChange: event => setValues(previous => ({ ...previous, [field.name]: event.target.value })) });
   return <form className="demo-editor-content" onSubmit={save}>
     <div className="demo-editor-heading"><h2>{title}</h2><button type="button" onClick={onClose} aria-label="关闭编辑器">关闭</button></div>
-    <p className="demo-editor-help">修改仅保存在本机演示数据中。</p>
+    <p className="demo-editor-help">修改仅保存在本机数据中。</p>
     {(fields[target.kind] || []).map(field => <label className="demo-editor-field" key={field.name} htmlFor={`edit-${field.name}`}><span>{field.label}</span>{native ? <input {...inputProps(field)} /> : <KeyboardInput {...inputProps(field)} />}</label>)}
     {target.kind === 'account' || target.kind === 'image' ? <div className="demo-image-field"><span>图片</span>{image ? <img src={image} alt="当前图片预览" /> : <p className="demo-editor-help">此位置暂不显示图片</p>}<label className="demo-file-button">{busy ? '正在处理…' : '选择本机图片'}<input type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif" aria-label="选择本机图片" disabled={busy} onChange={changeImage} /></label>
       <button type="button" onClick={() => setImage('')}>清空图片</button>{target.kind === 'image' && originalImage ? <button type="button" onClick={() => setImage(originalImage)}>使用原始图片</button> : null}</div> : null}
