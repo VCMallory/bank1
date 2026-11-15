@@ -79,7 +79,7 @@ function EditorBody({ target, onClose, store, native, dismissKeyboard }: Props &
   };
   return <div className="demo-editor-content">
     <div className="demo-editor-heading"><h2>管理演示数据</h2><button type="button" onClick={onClose} aria-label="关闭编辑器">关闭</button></div>
-    <p className="demo-editor-help">长按页面里的金额、记录或图片，即可编辑。本机保存，重启后保留。</p>
+    <p className="demo-editor-help">本机保存，重启后保留。</p>
     <div className="demo-editor-actions">
       <button onClick={() => setSelected({ kind: 'profile' })}>个人资料与资产</button><button onClick={() => setSelected({ kind: 'summary' })}>贷款汇总</button>
       <button onClick={() => setSelected({ kind: 'loan' })}>新增贷款</button><button onClick={() => setSelected({ kind: 'account' })}>新增账户</button><button onClick={() => setSelected({ kind: 'transaction' })}>新增交易</button>
