@@ -1,0 +1,137 @@
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { ChevronLeftIcon, ChevronRightIcon, ChevronDownIcon, EyeOpenIcon, EyeClosedIcon, MagnifyingGlassIcon, SpeakerLoudIcon, ChatBubbleIcon, HamburgerMenuIcon, GearIcon, CameraIcon, Cross1Icon, LockClosedIcon, EnterIcon, SliderIcon, CheckCircledIcon } from '@radix-ui/react-icons';
+import { MobileScroll, KeyboardInput, Carousel } from './mobile';
+import { Editor, type EditTarget } from './Editor';
+import { useStore, money, useLongPress, transactionAccountId, filterTransactions, latestTransactionMonth, type Transaction } from './model';
+import { canPerformDemoAction, completeDemoLogin, readDemoSession, requiresDemoLogin, sanitizeDemoStack, writeDemoSession, type DemoAction } from './session';
+import './finance.css';
+import HomeHeader from './HomeHeader';
+import HomeContent from './HomeContent';
+import NativeStatusSurface from './NativeStatusSurface';
+
+type Route = { page: string; id?: string };
+const assets='/assets/reference/';
+const tabs=[['home','首页'],['finance','金服'],['loan','贷款'],['life','生活'],['mine','我的']];
+const recentMonths=Array.from({length:12},(_,index)=>{const now=new Date();const date=new Date(now.getFullYear(),now.getMonth()-index,1);return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`});
+const menus:Record<string,string[][]>={
+ home:[['transfer','转账'],['account','我的账户'],['deposit','存款'],['payment','缴费通'],['loan','浙里贷'],['wealth','理财'],['creditcard','信用卡'],['branch','云网点'],['events','热门活动'],['all','全部']],
+ finance:[['transfer','转账'],['wealth','财富代销'],['withdraw','无卡取款'],['contract','产品签约'],['wealth','理财'],['deposit','存款'],['creditcard','借记卡申请'],['fund','基金'],['identity','身份证更新'],['all','全部']],
+ loan:[['myloan','我的贷款'],['creditcard','信用卡'],['subsidy','财政贴息…'],['contract','电子合同…'],['all','全部']],
+ security:[['login','登录管理'],['password','密码管理'],['wallet','支付设置'],['settings','限额设置'],['shield','安全检测']]
+};
+
+function Input({native,...props}:any){return native?<input {...props}/>:<KeyboardInput {...props}/>}
+function Scroll({native,children,className=''}:{native:boolean;children:ReactNode;className?:string}){return native?<div className={'native-scroll '+className}>{children}</div>:<MobileScroll className={className}>{children}</MobileScroll>}
+
+function Editable({target,edit,children,className='',onClick}:{target:EditTarget;edit:(t:EditTarget)=>void;children:ReactNode;className?:string;onClick?:()=>void}) {
+ const bind=useLongPress(()=>edit(target));
+ return <div className={'editable '+className} {...bind} onClick={onClick} tabIndex={0} onKeyDown={e=>{if(e.target!==e.currentTarget)return;if(e.key==='F2'||e.key==='Enter'){e.preventDefault();edit(target)}}} aria-label="可编辑内容">{children}</div>
+}
+
+export default function FinanceApp({native=false,onNavigate}:{native?:boolean;onNavigate?:()=>void}){
+ const store=useStore(), d=store.data;
+ const shellRef=useRef<HTMLDivElement>(null);
+ const savedTransaction=useRef<string|null>(null);
+ const [homeCompact,setHomeCompact]=useState(false);
+ const [stack,setStack]=useState<Route[]>([{page:'home'}]),[target,setTarget]=useState<EditTarget|null>(null);
+ const [visible,setVisible]=useState(false),[billVisible,setBillVisible]=useState(false),[expanded,setExpanded]=useState(false),[loanVisible,setLoanVisible]=useState(true);
+ const [logged,setLogged]=useState(readDemoSession);
+ const pendingAction=useRef<DemoAction|null>(null);
+ const [month,setMonth]=useState(()=>latestTransactionMonth(d.transactions,d.accounts,d.accounts[0]?.id||'')),[account,setAccount]=useState(d.accounts[0]?.id||''),[sort,setSort]=useState(false);
+ const [notice,setNotice]=useState(''),[showTip,setShowTip]=useState(true),[showReminder,setShowReminder]=useState(true);
+ const [username,setUsername]=useState(''),[password,setPassword]=useState(''),[agreed,setAgreed]=useState(false);
+ const [receiver,setReceiver]=useState(''),[transferAmount,setTransferAmount]=useState(''),[stage,setStage]=useState(0);
+ const requestedRoute=stack[stack.length-1];
+ const route=!logged&&requiresDemoLogin(requestedRoute.page)?{page:'login'}:requestedRoute;
+ const page=route.page, isTab=tabs.some(t=>t[0]===page);
+ useEffect(()=>{
+  setHomeCompact(false);
+  if(page!=='home')return;
+  const scroll=shellRef.current?.querySelector<HTMLElement>('.finance-scroll');
+  if(!scroll)return;
+  const update=()=>setHomeCompact(scroll.scrollTop>80);
+  update();scroll.addEventListener('scroll',update,{passive:true});
+  return()=>scroll.removeEventListener('scroll',update);
+ },[page,stack.length]);
+ const promptLogin=(action:DemoAction)=>{onNavigate?.();setTarget(null);if(page==='login')return;pendingAction.current=action;setPassword('');setStack([{page:'home'},{page:'login'}])};
+ const edit=(t:EditTarget)=>{const action:DemoAction={kind:'edit',target:t};if(!canPerformDemoAction(logged,action)){promptLogin(action);return}onNavigate?.();setTarget(t)};
+ const go=(p:string,id?:string)=>{const action:DemoAction={kind:'navigate',route:{page:p,id}};if(!canPerformDemoAction(logged,action)){promptLogin(action);return}onNavigate?.();setExpanded(false);setStage(0);setTarget(null);setStack(s=>[...sanitizeDemoStack(s,logged),{page:p,id}])};
+ const selectTab=(p:string)=>{if(!logged&&requiresDemoLogin(p)){promptLogin({kind:'navigate',route:{page:p}});return}onNavigate?.();setTarget(null);setStack([{page:p}])};
+ const back=()=>{onNavigate?.();setTarget(null);if(page==='login'){pendingAction.current=null;setPassword('')}setStack(s=>sanitizeDemoStack(s.length>1?s.slice(0,-1):s,logged))};
+ const finishLogin=()=>{const next=completeDemoLogin(pendingAction.current);pendingAction.current=null;writeDemoSession(true);setLogged(true);setPassword('');setAgreed(false);setVisible(false);setBillVisible(false);onNavigate?.();setStack(next.stack);setTarget(next.edit)};
+ const logout=()=>{writeDemoSession(false);pendingAction.current=null;setLogged(false);setTarget(null);setPassword('');setUsername('');setAgreed(false);setReceiver('');setTransferAmount('');setExpanded(false);setVisible(false);setBillVisible(false);setLoanVisible(true);setNotice('');onNavigate?.();setStack([{page:'home'}])};
+ const notify=(s:string)=>{setNotice(s);window.setTimeout(()=>setNotice(''),2800)};
+ const chooseAccount=(id:string)=>{setAccount(id);setMonth(latestTransactionMonth(d.transactions,d.accounts,id))};
+ const transactionSaved=(transaction:Transaction)=>{
+  savedTransaction.current=transaction.id;
+  setAccount(transactionAccountId(transaction,d.accounts));setMonth(transaction.date.slice(0,7));
+  onNavigate?.();setTarget(null);
+  setStack(current=>{
+   const safe=sanitizeDemoStack(current,logged);
+   const existing=safe.map(item=>item.page).lastIndexOf('transactions');
+   return existing>=0?safe.slice(0,existing+1):[...safe,{page:'transactions'}];
+  });
+ };
+ useEffect(()=>{
+  if(account!==''&&!d.accounts.some(a=>a.id===account)){
+   const next=d.accounts[0]?.id||'';setAccount(next);setMonth(latestTransactionMonth(d.transactions,d.accounts,next));
+  }
+ },[account,d.accounts,d.transactions]);
+ useEffect(()=>{
+  if(page!=='transactions'||!savedTransaction.current)return;
+  const index=filterTransactions(d.transactions,d.accounts,account,month).findIndex(t=>t.id===savedTransaction.current);
+  if(index<0)return;
+  shellRef.current?.querySelectorAll<HTMLElement>('.transaction-row')[index]?.scrollIntoView({block:'center'});
+  savedTransaction.current=null;
+ },[page,account,month,d.transactions,d.accounts]);
+ useEffect(()=>{const handler=()=>{if(stack.length>1)back()};window.addEventListener('popstate',handler);return()=>window.removeEventListener('popstate',handler)},[stack.length,logged,page]);
+ useEffect(()=>{const handler=(event:StorageEvent)=>{if(event.key==='demo-logged'&&!readDemoSession())logout()};window.addEventListener('storage',handler);return()=>window.removeEventListener('storage',handler)},[]);
+ const img=(key:string,fallback:string)=>d.images[key]??(fallback.startsWith('/')||fallback.startsWith('data:')?fallback:assets+fallback);
+ const image=(key:string,fallback:string,className='',click?:()=>void)=><Editable className={className} target={{kind:'image',key,id:fallback.startsWith('/')||fallback.startsWith('data:')?fallback:assets+fallback}} edit={edit} onClick={click}>{img(key,fallback)?<img src={img(key,fallback)} alt="" draggable={false}/>:<span className="missing-image" aria-label="添加图片"/>}</Editable>;
+ const icon=(name:string)=>{const security:Record<string,any>={login:EnterIcon,password:LockClosedIcon,settings:SliderIcon,shield:CheckCircledIcon};if(security[name]){const Icon=security[name];return <Icon className="feature-icon"/>}const aliases:Record<string,string>={creditcard:'card',branch:'outlet',events:'activity',myloan:'my-loan',withdraw:'withdrawal',export:'export-bill',social:'social-security'};const filename=({scan:'home-video-quick-scan',receive:'home-video-quick-receive',travel:'home-video-quick-travel',wallet:'home-video-quick-wallet'} as Record<string,string>)[name]||'icon-'+(aliases[name]||name);return <img className="feature-icon" src={assets+filename+'.png'} alt="" onError={e=>{e.currentTarget.onerror=null;e.currentTarget.src=assets+'icon-all.png'}}/>};
+ const action=(name:string,label?:string)=>{if(name==='account')go('accounts');else if(name==='myloan')go('myloans');else if(name==='transfer')go('transfer');else if(name==='loan')go('loan');else if(name==='login')go('login');else if(name==='all')go('all');else go('service',label||'服务')};
+ const grid=(kind:string,cols=5)=><div className={'feature-grid cols-'+cols}>{menus[kind].map(([name,label],i)=><button key={i} onClick={()=>action(name,label)}>{icon(kind==='home'&&name==='all'?'all-badge':name)}<span>{label}</span></button>)}</div>;
+ const section=(title:string,more?:string,onClick?:()=>void)=><div className="section-heading"><h2>{title}</h2>{more?<button onClick={onClick||(()=>go('service',title))}>{more}<ChevronRightIcon/></button>:null}</div>;
+ const goldButton=(text:string,onClick:()=>void)=><button className="gold-button" onClick={onClick}>{text}</button>;
+ const header=(title:string,right?:string,click?:()=>void)=><header className="screen-header"><button aria-label="返回" onClick={back}><ChevronLeftIcon/></button><h1>{title}</h1>{right?<button className="header-right" onClick={click}>{right}</button>:null}</header>;
+ const summary=<Editable target={{kind:'summary'}} edit={edit} className="loan-summary white-card">
+  <div className="summary-main"><span>可借额度 <button aria-label="显示贷款金额" onClick={e=>{e.stopPropagation();setLoanVisible(!loanVisible)}}>{loanVisible?<EyeOpenIcon/>:<EyeClosedIcon/>}</button><em>提额</em></span><button className="coupon" onClick={()=>go('service','优惠券')}>优惠券</button>
+  <strong className="available"><small>¥</small>{loanVisible?money(d.loanSummary.available):'****'}</strong><div className="summary-bottom"><span>ⓘ 已签合同的剩余可借额度</span>{goldButton('借一笔',()=>go('borrow'))}</div></div>
+  <div className="principal"><span>待还本金</span><b>¥{loanVisible?money(d.loanSummary.principal):'****'}</b></div>
+ </Editable>;
+ const creditSection=<><div className="credit-section">{section('丰收信用卡','更多功能')}<div className="credit-layout"><div className="credit-ad"><h3>腾讯联名卡</h3><div className="credit-mid">{image('creditcard','loan-creditcard-face-silver.png','credit-face',()=>go('service','信用卡申请'))}<b>特享<br/>专属权益</b></div><p>最高 <strong>10万</strong> 额度</p>{goldButton('去申请',()=>go('service','信用卡申请'))}<div className="credit-dots">● ▬ ●</div></div><div className="credit-actions">{[['activate','卡片启用','激活开启新体验'],['progress','申卡进度','办卡进度实时掌握'],['recommend','推荐办卡','邀请好友赢好礼']].map(([ic,t,s])=><button key={ic} onClick={()=>go('service',t)}>{icon(ic)}<span><b>{t}</b><small>{s}</small></span></button>)}</div></div></div>{section('浙里贷','更多信用贷款')}<div className="loan-promo" onClick={()=>go('borrow')}><b>浙里贷 <em>⇄ 义乌农商银行</em></b><p>线上信用 随借随还 极速放款</p>{goldButton('立即申请',()=>go('borrow'))}</div><div className="two-products"><button onClick={()=>go('borrow')}><b>信农贷 <em>我是农户</em></b><p>小额普惠贷款</p></button><button onClick={()=>go('borrow')}><b>云商贷 <em>我是商户</em></b><p>个体工商户专属</p></button></div></>;
+
+ let content:ReactNode;
+ if(page==='home')content=<HomeContent renderImage={image} renderIcon={icon} mainMenu={grid('home')} onNavigate={go}/>;
+ else if(page==='loan')content=<><div className="loan-top">{summary}</div><div className="page-padding loan-content">{grid('loan')}{creditSection}</div></>;
+ else if(page==='finance')content=<><div className="finance-top"><h1>金融服务</h1><div className="finance-grid white-card">{grid('finance')}</div></div><div className="page-padding finance-content">{section('丰收缴费通','更多')}<div className="payment-cards">{[['城乡两费','一次不跑'],['校园缴费','安全放心'],['公共支付','快捷便利'],['生活缴费','秒充秒到']].map(([a,b])=><button key={a} onClick={()=>go('service',a)}><b>{a}</b><span>{b}</span></button>)}</div><div className="wealth-title">{goldButton('¥ 理财',()=>go('service','理财'))}</div><div className="white-card wealth-products">{section('优选理财','更多')}<Carousel ariaLabel="理财产品" className="wealth-carousel" contentClassName="wealth-track">{['2.0000%~2.6000%','1.8000%~2.4500%','2.0000%~2.6000%'].map((v,i)=><button className="wealth-product" key={i} onClick={()=>go('service','理财产品详情')}><em>推荐</em><b>丰收信福2026年第7…</b><strong>{v}</strong><span>业绩比较基准</span></button>)}</Carousel></div></div></>;
+ else if(page==='mine')content=<><div className="profile-top"><div className="profile-tools"><button aria-label="设置" onClick={()=>go('settings')}><GearIcon/></button><button aria-label="客服" onClick={()=>go('service','在线客服')}><SpeakerLoudIcon/></button><button aria-label="消息" onClick={()=>go('service','消息')}><ChatBubbleIcon/></button><button aria-label="简洁版" onClick={()=>notify('已使用标准布局')}><HamburgerMenuIcon/></button></div><div className="profile-info">{image('avatar','profile-avatar.png',d.images.avatar===undefined?'avatar profile-avatar-warm':'avatar',()=>logged?edit({kind:'profile'}):go('login'))}<div className="profile-name"><div className="profile-title-row"><Editable target={{kind:'profile'}} edit={edit} className="profile-display-name"><b>{logged?d.profile.name:'尊敬的用户，您好'}</b></Editable>{logged?<button type="button" className="profile-benefits" onClick={()=>go('service','福利中心')}>福利中心<ChevronRightIcon/></button>:null}</div><Editable target={{kind:'profile'}} edit={edit} className="profile-contact"><span>{logged?d.profile.phone:'登录可查看您的资产情况'}</span>{logged?<small>上次登录：{d.profile.lastLogin}</small>:null}</Editable></div><button className="profile-login" onClick={()=>logged?go('transactions'):go('login')}>{logged?'交易查询':'登录/注册'}</button></div><div className="profile-counts white-card">{[['我的账户',d.accounts.length],['红包',0],['票券',0],['积分',0]].map(([t,n],i)=><button key={t} onClick={()=>i===0?go('accounts'):go('service',String(t))}><strong>{n}</strong><span>{t}</span></button>)}</div></div><div className="page-padding profile-content"><div className="merchant"><b>云商户</b>{goldButton('去看看',()=>go('service','云商户'))}</div><div className="white-card asset-panel"><div className="panel-heading"><h2>资产负债</h2><button aria-label="切换资产显示" onClick={()=>setVisible(!visible)}>{visible?<EyeOpenIcon/>:<EyeClosedIcon/>}</button><span aria-hidden="true">⌄</span></div><Editable target={{kind:'profile'}} edit={edit}><div className="asset-line"><b>总资产 (元)</b><strong>{visible?money(d.profile.assets):'****'}</strong></div><div className="asset-line liability"><b>总负债 (元)</b><strong>{visible?money(d.profile.liabilities):'****'}</strong></div></Editable></div><div className="white-card bill-panel"><div className="panel-heading"><h2>智能账单</h2><button aria-label="切换账单显示" onClick={()=>setBillVisible(!billVisible)}>{billVisible?<EyeOpenIcon/>:<EyeClosedIcon/>}</button><button className="panel-more" aria-label="查看账单明细" onClick={()=>go('transactions')}><ChevronRightIcon/></button></div><Editable target={{kind:'profile'}} edit={edit} className="bill-numbers"><div><span>本月收入 (元)</span><b>{billVisible?money(d.profile.income):'****'}</b></div><div><span>本月支出 (元)</span><b>{billVisible?money(d.profile.expense):'****'}</b></div></Editable><div className="bill-bars"><i/><i/></div>{image('bill','profile-monthly-bill.png','bill-image',()=>go('transactions'))}</div><div className="white-card security-panel">{section('安全中心','',()=>go('settings'))}{grid('security')}</div><div className="white-card extra-panel">{section('更多服务')}{goldButton('数据管理',()=>edit({kind:'manage'}))}{logged?<button className="plain-link" onClick={logout}>退出登录</button>:null}</div></div></>;
+ else if(page==='myloans')content=<>{header('我的贷款','历史明细',()=>go('records'))}<div className="page-padding subpage">{d.loans.map(l=><Editable className="white-card loan-card" key={l.id} target={{kind:'loan',id:l.id}} edit={edit}><div className="loan-card-heading"><b>{l.name} <small>{l.tail}</small></b><em>{l.bank}</em></div><div className="loan-card-values"><div><strong>¥{money(l.principal)}</strong><span>待还本金</span></div><div><strong>¥{money(l.available)}</strong><span>剩余可借额度</span></div></div><button className="expand-loan" onClick={()=>setExpanded(!expanded)}><span>未结清借款 1笔</span><span>{expanded?'收起':'展开'}<ChevronDownIcon/></span></button>{expanded?<button className="expanded-record" onClick={()=>go('records',l.id)}><span>第1笔　¥{money(l.principal)}</span><ChevronRightIcon/></button>:null}<div className="loan-card-footer"><button onClick={()=>go('records',l.id)}>全部借款记录 <ChevronRightIcon/></button><div>{goldButton('借款',()=>go('borrow',l.id))}{goldButton('还款',()=>go('repay',l.id))}</div></div></Editable>)}{d.loans.length===0?<div className="empty-state">暂无贷款</div>:null}<button className="outline-button" onClick={()=>go('loan')}>查看更多贷款产品</button>{image('loanPromotion','loan-promotion.png','loan-banner',()=>go('service','分期达标有礼'))}</div></>;
+ else if(page==='records')content=<>{header('借款记录','排序方式',()=>setSort(!sort))}<div className="page-padding subpage">{[...d.loans].sort((a,b)=>sort?b.principal-a.principal:0).map(l=><Editable target={{kind:'loan',id:l.id}} edit={edit} className="white-card record-card" key={l.id}><div className="record-title"><b>第1笔　¥{money(l.principal)}</b>{goldButton('去还款',()=>go('repay',l.id))}</div><div className="record-line"><span>待还本金 <b>¥{money(l.principal)}</b></span><span>年利率（单利）<b>{l.rate}%</b></span></div><div className="record-line"><span>借款日期 <b>{l.start}</b></span></div><div className="record-line"><span>到期日期 <b>{l.end}</b></span></div></Editable>)}{d.loans.length===0?<div className="empty-state">暂无借款记录</div>:null}</div></>;
+ else if(page==='accounts')content=<>{header('我的账户','切换全量版',()=>notify('已展示全部本地账户'))}{showTip?<div className="account-tip"><span>ⓘ 本界面展示手机银行签约账户，全量账户请切换全量版查看</span><button aria-label="关闭提示" onClick={()=>setShowTip(false)}><Cross1Icon/></button></div>:null}<div className="page-padding subpage">{d.accounts.map((a,i)=><Editable target={{kind:'account',id:a.id}} edit={edit} className="white-card account-card" key={a.id}>{i===0?<em className="default-tag">默认</em>:null}<div className="account-top">{image('account-'+a.id,a.image,'bank-card-image')}<div><div className="bank-name">{a.bank} <small>{a.type}</small></div><b className="account-number">{a.number}</b></div></div><div className="account-balance"><span>可用余额</span><strong>¥{money(a.balance)}</strong></div>{i===0||expanded?<div className="account-actions"><button onClick={()=>go('transfer')}>转账汇款</button><button onClick={()=>{chooseAccount(a.id);go('transactions')}}>账户明细</button><button onClick={()=>notify('卡号：'+a.number)}>查看卡号</button></div>:<button className="account-expand" aria-label="展开账户操作" onClick={()=>setExpanded(true)}><ChevronDownIcon/></button>}</Editable>)}{goldButton('网上签约',()=>go('service','网上签约'))}<div className="white-card account-services">{[['buy-deposit','购买存款'],['manage-account','账户管理'],['export','账单导出'],['social','社保卡申领']].map(([ic,t])=><button key={ic} onClick={()=>t==='账户管理'?edit({kind:'manage'}):go('service',t)}>{icon(ic)}<span>{t}</span></button>)}</div></div></>;
+ else if(page==='transactions'){
+ const transactions=filterTransactions(d.transactions,d.accounts,account,month);
+ const unlinked=d.transactions.some(t=>transactionAccountId(t,d.accounts)==='');
+ content=<>{header('账户明细')}<div className="transaction-filters"><select aria-label="选择账户" value={account} onChange={e=>chooseAccount(e.target.value)}>{d.accounts.map(a=><option key={a.id} value={a.id}>借记卡{a.number.slice(-4)}</option>)}{unlinked||d.accounts.length===0?<option value="">未关联账户</option>:null}</select><select aria-label="选择时间" value={month} onChange={e=>setMonth(e.target.value)}>{[...new Set([month,...recentMonths,...d.transactions.map(t=>t.date.slice(0,7))])].sort().reverse().map(m=><option value={m} key={m}>{m.slice(0,4)}年{m.slice(5)}月</option>)}</select><button onClick={()=>notify('当前币种：人民币')}>CNY⌄</button><button onClick={()=>edit({kind:'manage'})}>更多查询 ›</button></div><div className="month-title">{month.slice(0,4)}年{month.slice(5)}月</div><div className="transactions">{transactions.map(t=><Editable key={t.id} target={{kind:'transaction',id:t.id}} edit={edit} onClick={()=>go('detail',t.id)} className="transaction-row"><div><b>{t.title}</b><strong className={t.amount<0?'negative':'positive'}>{t.amount<0?'−':'+'}{money(Math.abs(t.amount))}</strong></div><div><span>{t.date}</span><span>余额：{money(t.balance)}</span></div></Editable>)}{transactions.length===0?<div className="empty-state">本月暂无交易记录<br/><button onClick={()=>edit({kind:'transaction'})}>添加记录</button></div>:null}</div></>;
+ }
+ else if(page==='detail'){
+ const t=d.transactions.find(t=>t.id===route.id);
+ content=<>{header('交易详情')}{t?<Editable target={{kind:'transaction',id:t.id}} edit={edit} className="transaction-detail"><div className="detail-hero"><span>{t.counterparty}</span><strong>¥{t.amount<0?'−':'+'}{money(Math.abs(t.amount))}</strong><p>账户余额 {money(t.balance)}人民币</p></div><dl>{[['对方账号',t.account],['摘要类型',t.title],['交易渠道',t.channel],['交易网点',t.branch],['交易时间',t.date],['用途',t.purpose]].map(([k,v])=><div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl></Editable>:<div className="empty-state">记录已删除</div>}</>;
+ }
+ else if(page==='login')content=<>{header('登录','注册',()=>notify('本地账号可自行填写'))}<div className="login-page">{image('loginAvatar','login-avatar.png','login-avatar')}<div className="white-card login-fields"><label>登录名<Input native={native} placeholder="手机号/身份证/用户名" value={username} onChange={(e:any)=>setUsername(e.target.value)}/></label><label>登录密码<Input native={native} type="password" placeholder="请输入密码" value={password} onChange={(e:any)=>setPassword(e.target.value)}/></label></div><label className="agreement"><input type="checkbox" checked={agreed} onChange={e=>setAgreed(e.target.checked)}/><span>我已阅读并同意<br/><em>《使用说明》</em></span></label><button className="gold-button login-submit" disabled={!username||!password||!agreed} onClick={finishLogin}>登录</button><button className="plain-link" onClick={()=>notify('本地密码可自行填写')}>忘记密码</button></div></>;
+ else if(page==='transfer')content=<>{header('转账')}<div className="transfer-gold"><div className="white-card transfer-form"><div className="receiver"><Input native={native} placeholder="请输入收款账号" value={receiver} onChange={(e:any)=>setReceiver(e.target.value)}/><button aria-label="选择收款图片" onClick={()=>edit({kind:'image',key:'receiverPhoto'})}><CameraIcon/></button></div>{stage>0?<label className="transfer-amount">转账金额<Input native={native} type="number" placeholder="请输入金额" value={transferAmount} onChange={(e:any)=>setTransferAmount(e.target.value)}/></label>:null}<button className="gold-button" disabled={!receiver||(stage>0&&!(Number(transferAmount)>0))} onClick={()=>stage===0?setStage(1):notify('流程已完成，不产生资金转移')}>{stage===0?'下一步':'确认转账'}</button></div><div className="white-card transfer-services">{[['progress','预约转账'],['recommend','延时转账撤销'],['wealth','资金归集'],['identity','手机号转账']].map(([ic,t])=><button key={t} onClick={()=>go('service',t)}>{icon(ic)}<span>{t}</span></button>)}</div></div><div className="page-padding"><div className="white-card recent-transfers"><h2>最近转账</h2><span>暂无最近收款人</span></div></div></>;
+ else if(page==='borrow'||page==='repay')content=<>{header(page==='borrow'?'借款':'还款')}<div className="page-padding subpage"><div className="white-card operation-card"><h2>{page==='borrow'?'可借额度':'待还本金'}</h2><strong>¥{money(page==='borrow'?d.loanSummary.available:d.loanSummary.principal)}</strong><p>选择金额，体验{page==='borrow'?'借款':'还款'}流程</p><Input native={native} type="number" placeholder="请输入金额" value={transferAmount} onChange={(e:any)=>setTransferAmount(e.target.value)}/><button className="gold-button" disabled={!(Number(transferAmount)>0)} onClick={()=>notify('流程已完成，账户数据保持不变')}>确认{page==='borrow'?'借款':'还款'}</button></div></div></>;
+ else if(page==='all')content=<>{header('全部服务')}<div className="page-padding all-services">{section('常用功能')}{grid('home')}{section('贷款服务')}{grid('loan')}{section('数据管理')}{goldButton('管理本地数据',()=>edit({kind:'manage'}))}</div></>;
+ else if(page==='settings')content=<>{header('设置')}<div className="page-padding subpage"><div className="white-card settings-list"><button onClick={()=>edit({kind:'profile'})}>个人资料<ChevronRightIcon/></button><button onClick={()=>edit({kind:'manage'})}>数据管理<ChevronRightIcon/></button><button onClick={()=>notify('可在数据管理中修改本地内容')}>编辑使用说明<ChevronRightIcon/></button></div></div></>;
+ else content=<>{isTab?<div className="life-title">生活服务</div>:header(route.id||'服务')}<div className="page-padding subpage"><div className="white-card service-page"><h2>{isTab?'便捷生活':route.id}</h2><p>本地服务</p><p>可通过下方入口继续浏览账户、贷款与交易明细。</p>{goldButton('我的账户',()=>go('accounts'))}{goldButton('我的贷款',()=>go('myloans'))}<button className="plain-link" onClick={()=>edit({kind:'manage'})}>管理数据</button></div></div></>;
+
+ return <div ref={shellRef} className={'finance-app '+(native?'native-app ':'')+(isTab?'has-tabs ':'')+(page==='mine'&&showReminder?'has-reminder ':'')+(logged&&target?'is-editing ':'')+'page-'+page}>
+  {native?<NativeStatusSurface page={page} revision={stack.length} shellRef={shellRef}/>:null}
+  {page==='home'?<HomeHeader compact={homeCompact} renderIcon={icon} onNavigate={go}/>:null}
+  <Scroll key={page+stack.length} native={native} className="finance-scroll"><main key={page} className={'finance-main '+(isTab?'with-tabs':'')}>{content}</main></Scroll>
+  {page==='mine'&&showReminder?<div className="password-reminder"><span>您的交易密码长期未修改，点击请修改</span><button aria-label="关闭提醒" onClick={()=>setShowReminder(false)}><Cross1Icon/></button></div>:null}
+  {isTab?<nav className="bottom-tabs" aria-label="主导航">{tabs.map(([p,t])=><button key={p} className={p===page?'selected':''} aria-current={p===page?'page':undefined} onClick={()=>selectTab(p)}><img src={assets+`nav-${p==='mine'?'profile':p}${p===page&&p!=='life'?'-active':''}.png`} alt=""/><span>{t}</span></button>)}</nav>:null}
+  {notice||store.error?<div className="app-toast" role="status">{notice||store.error}</div>:null}
+  <Editor native={native} target={logged?target:null} onClose={()=>setTarget(null)} store={store} defaultAccountId={account} onTransactionSaved={transactionSaved}/>
+ </div>
+}

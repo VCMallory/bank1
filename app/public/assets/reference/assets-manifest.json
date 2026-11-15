@@ -1,0 +1,1188 @@
+[
+  {
+    "name": "home-hero",
+    "path": "/assets/reference/home-hero.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      0,
+      563,
+      1290,
+      1014
+    ],
+    "dimensions": [
+      1290,
+      451
+    ],
+    "description": "Primary blue promotional illustration",
+    "suggestedCssWidth": 430
+  },
+  {
+    "name": "home-promotion",
+    "path": "/assets/reference/home-promotion.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      48,
+      1727,
+      1243,
+      2039
+    ],
+    "dimensions": [
+      1195,
+      312
+    ],
+    "description": "Secondary blue promotional banner",
+    "suggestedCssWidth": 398
+  },
+  {
+    "name": "home-civic",
+    "path": "/assets/reference/home-civic.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      76,
+      2184,
+      1215,
+      2544
+    ],
+    "dimensions": [
+      1139,
+      360
+    ],
+    "description": "Civic services promotion",
+    "suggestedCssWidth": 380
+  },
+  {
+    "name": "loan-creditcard-face",
+    "path": "/assets/reference/loan-creditcard-face.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      90,
+      1276,
+      316,
+      1415
+    ],
+    "dimensions": [
+      226,
+      139
+    ],
+    "description": "Red credit card face",
+    "suggestedCssWidth": 76
+  },
+  {
+    "name": "loan-creditcard-face-silver",
+    "path": "/assets/reference/loan-creditcard-face-silver.png",
+    "source": "codex-clipboard-8b5890cb-8c3c-4806-8b10-5c99c62be020.jpg",
+    "crop": [
+      90,
+      1267,
+      314,
+      1406
+    ],
+    "dimensions": [
+      224,
+      139
+    ],
+    "description": "Silver credit card face",
+    "suggestedCssWidth": 76
+  },
+  {
+    "name": "loan-promotion",
+    "path": "/assets/reference/loan-promotion.png",
+    "source": "codex-clipboard-7bffcaf0-896d-4b7e-bb21-92af6aa01bc1.jpg",
+    "crop": [
+      52,
+      1875,
+      1228,
+      2142
+    ],
+    "dimensions": [
+      1176,
+      267
+    ],
+    "description": "Loan record promotional banner",
+    "suggestedCssWidth": 398
+  },
+  {
+    "name": "account-social-card",
+    "path": "/assets/reference/account-social-card.png",
+    "source": "codex-clipboard-f38e4229-5314-49f5-91c3-aa4b244fea80.png",
+    "crop": [
+      96,
+      456,
+      312,
+      589
+    ],
+    "dimensions": [
+      216,
+      133
+    ],
+    "description": "Social security card artwork",
+    "suggestedCssWidth": 72
+  },
+  {
+    "name": "account-electronic-card",
+    "path": "/assets/reference/account-electronic-card.png",
+    "source": "codex-clipboard-f38e4229-5314-49f5-91c3-aa4b244fea80.png",
+    "crop": [
+      96,
+      924,
+      312,
+      1055
+    ],
+    "dimensions": [
+      216,
+      131
+    ],
+    "description": "Electronic account card artwork",
+    "suggestedCssWidth": 72
+  },
+  {
+    "name": "profile-monthly-bill",
+    "path": "/assets/reference/profile-monthly-bill.png",
+    "source": "codex-clipboard-cbce4887-b6db-42fb-9897-fe2ae5274f1d.jpg",
+    "crop": [
+      95,
+      1957,
+      1185,
+      2194
+    ],
+    "dimensions": [
+      1090,
+      237
+    ],
+    "description": "Monthly bill decorative banner",
+    "suggestedCssWidth": 364
+  },
+  {
+    "name": "profile-avatar",
+    "path": "/assets/reference/profile-avatar.png",
+    "source": "codex-clipboard-1ff331fd-9e87-48de-862d-8d7b2af10d4f.png",
+    "crop": [
+      48,
+      300,
+      217,
+      470
+    ],
+    "dimensions": [
+      169,
+      170
+    ],
+    "description": "Generic profile avatar",
+    "suggestedCssWidth": 56
+  },
+  {
+    "name": "login-avatar",
+    "path": "/assets/reference/login-avatar.png",
+    "source": "codex-clipboard-8fde8dfa-0c78-46d2-b254-022e5ff8b6ad.png",
+    "crop": [
+      554,
+      365,
+      736,
+      547
+    ],
+    "dimensions": [
+      182,
+      182
+    ],
+    "description": "Generic gold login avatar",
+    "suggestedCssWidth": 60
+  },
+  {
+    "name": "profile-avatar-gold",
+    "path": "/assets/reference/profile-avatar-gold.png",
+    "source": "codex-clipboard-8fde8dfa-0c78-46d2-b254-022e5ff8b6ad.png",
+    "crop": [
+      554,
+      365,
+      736,
+      547
+    ],
+    "dimensions": [
+      182,
+      182
+    ],
+    "description": "Generic gold login avatar alias",
+    "suggestedCssWidth": 60
+  },
+  {
+    "name": "credit-card-background",
+    "path": "/assets/reference/credit-card-background.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      553,
+      1132,
+      583,
+      1786
+    ],
+    "dimensions": [
+      30,
+      654
+    ],
+    "description": "Unobstructed red credit promotion texture strip"
+  },
+  {
+    "name": "login-weibo",
+    "path": "/assets/reference/login-weibo.png",
+    "source": "codex-clipboard-8fde8dfa-0c78-46d2-b254-022e5ff8b6ad.png",
+    "crop": [
+      299,
+      2556,
+      388,
+      2647
+    ],
+    "dimensions": [
+      89,
+      91
+    ],
+    "description": "Weibo sign-in artwork",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "login-wechat",
+    "path": "/assets/reference/login-wechat.png",
+    "source": "codex-clipboard-8fde8dfa-0c78-46d2-b254-022e5ff8b6ad.png",
+    "crop": [
+      602,
+      2556,
+      691,
+      2647
+    ],
+    "dimensions": [
+      89,
+      91
+    ],
+    "description": "WeChat sign-in artwork",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "login-apple",
+    "path": "/assets/reference/login-apple.png",
+    "source": "codex-clipboard-8fde8dfa-0c78-46d2-b254-022e5ff8b6ad.png",
+    "crop": [
+      901,
+      2556,
+      990,
+      2647
+    ],
+    "dimensions": [
+      89,
+      91
+    ],
+    "description": "Apple sign-in artwork",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "loan-top-background",
+    "path": "/assets/reference/loan-top-background.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      0,
+      118,
+      1290,
+      180
+    ],
+    "dimensions": [
+      1290,
+      62
+    ],
+    "description": "Gold header source texture strip"
+  },
+  {
+    "name": "profile-top-background",
+    "path": "/assets/reference/profile-top-background.png",
+    "source": "codex-clipboard-1ff331fd-9e87-48de-862d-8d7b2af10d4f.png",
+    "crop": [
+      0,
+      116,
+      1290,
+      168
+    ],
+    "dimensions": [
+      1290,
+      52
+    ],
+    "description": "Red header source texture strip"
+  },
+  {
+    "name": "finance-top-background",
+    "path": "/assets/reference/finance-top-background.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      0,
+      118,
+      1290,
+      175
+    ],
+    "dimensions": [
+      1290,
+      57
+    ],
+    "description": "Red finance header source texture strip"
+  },
+  {
+    "name": "home-scan",
+    "path": "/assets/reference/home-scan.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      146,
+      372,
+      248,
+      483
+    ],
+    "dimensions": [
+      102,
+      111
+    ],
+    "description": "Home header action icon",
+    "suggestedCssWidth": 34
+  },
+  {
+    "name": "home-pay",
+    "path": "/assets/reference/home-pay.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      440,
+      372,
+      548,
+      483
+    ],
+    "dimensions": [
+      108,
+      111
+    ],
+    "description": "Home header action icon",
+    "suggestedCssWidth": 34
+  },
+  {
+    "name": "home-travel",
+    "path": "/assets/reference/home-travel.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      741,
+      369,
+      852,
+      483
+    ],
+    "dimensions": [
+      111,
+      114
+    ],
+    "description": "Home header action icon",
+    "suggestedCssWidth": 34
+  },
+  {
+    "name": "home-wallet",
+    "path": "/assets/reference/home-wallet.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      1041,
+      375,
+      1150,
+      485
+    ],
+    "dimensions": [
+      109,
+      110
+    ],
+    "description": "Home header action icon",
+    "suggestedCssWidth": 34
+  },
+  {
+    "name": "icon-transfer",
+    "path": "/assets/reference/icon-transfer.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      105,
+      1073,
+      224,
+      1184
+    ],
+    "dimensions": [
+      119,
+      111
+    ],
+    "description": "Home service icon",
+    "suggestedCssWidth": 36
+  },
+  {
+    "name": "icon-account",
+    "path": "/assets/reference/icon-account.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      350,
+      1073,
+      466,
+      1184
+    ],
+    "dimensions": [
+      116,
+      111
+    ],
+    "description": "Home service icon",
+    "suggestedCssWidth": 36
+  },
+  {
+    "name": "icon-deposit",
+    "path": "/assets/reference/icon-deposit.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      590,
+      1073,
+      706,
+      1184
+    ],
+    "dimensions": [
+      116,
+      111
+    ],
+    "description": "Home service icon",
+    "suggestedCssWidth": 36
+  },
+  {
+    "name": "icon-payment",
+    "path": "/assets/reference/icon-payment.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      833,
+      1073,
+      949,
+      1184
+    ],
+    "dimensions": [
+      116,
+      111
+    ],
+    "description": "Home service icon",
+    "suggestedCssWidth": 36
+  },
+  {
+    "name": "icon-loan",
+    "path": "/assets/reference/icon-loan.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      1074,
+      1073,
+      1190,
+      1184
+    ],
+    "dimensions": [
+      116,
+      111
+    ],
+    "description": "Home service icon",
+    "suggestedCssWidth": 36
+  },
+  {
+    "name": "icon-wealth",
+    "path": "/assets/reference/icon-wealth.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      105,
+      1324,
+      224,
+      1432
+    ],
+    "dimensions": [
+      119,
+      108
+    ],
+    "description": "Home service icon",
+    "suggestedCssWidth": 36
+  },
+  {
+    "name": "icon-card",
+    "path": "/assets/reference/icon-card.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      350,
+      1324,
+      466,
+      1432
+    ],
+    "dimensions": [
+      116,
+      108
+    ],
+    "description": "Home service icon",
+    "suggestedCssWidth": 36
+  },
+  {
+    "name": "icon-outlet",
+    "path": "/assets/reference/icon-outlet.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      590,
+      1324,
+      706,
+      1432
+    ],
+    "dimensions": [
+      116,
+      108
+    ],
+    "description": "Home service icon",
+    "suggestedCssWidth": 36
+  },
+  {
+    "name": "icon-activity",
+    "path": "/assets/reference/icon-activity.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      832,
+      1306,
+      1000,
+      1432
+    ],
+    "dimensions": [
+      168,
+      126
+    ],
+    "description": "Home service icon",
+    "suggestedCssWidth": 36
+  },
+  {
+    "name": "icon-my-loan",
+    "path": "/assets/reference/icon-my-loan.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      132,
+      735,
+      228,
+      836
+    ],
+    "dimensions": [
+      96,
+      101
+    ],
+    "description": "Loan service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-loan-card",
+    "path": "/assets/reference/icon-loan-card.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      369,
+      735,
+      457,
+      822
+    ],
+    "dimensions": [
+      88,
+      87
+    ],
+    "description": "Loan service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-subsidy",
+    "path": "/assets/reference/icon-subsidy.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      600,
+      732,
+      690,
+      824
+    ],
+    "dimensions": [
+      90,
+      92
+    ],
+    "description": "Loan service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-contract",
+    "path": "/assets/reference/icon-contract.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      836,
+      731,
+      922,
+      824
+    ],
+    "dimensions": [
+      86,
+      93
+    ],
+    "description": "Loan service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-loan-all",
+    "path": "/assets/reference/icon-loan-all.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      1074,
+      731,
+      1164,
+      824
+    ],
+    "dimensions": [
+      90,
+      93
+    ],
+    "description": "Loan service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-activate",
+    "path": "/assets/reference/icon-activate.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      686,
+      1173,
+      777,
+      1259
+    ],
+    "dimensions": [
+      91,
+      86
+    ],
+    "description": "Loan service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-progress",
+    "path": "/assets/reference/icon-progress.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      684,
+      1407,
+      779,
+      1500
+    ],
+    "dimensions": [
+      95,
+      93
+    ],
+    "description": "Loan service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-recommend",
+    "path": "/assets/reference/icon-recommend.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      685,
+      1642,
+      778,
+      1736
+    ],
+    "dimensions": [
+      93,
+      94
+    ],
+    "description": "Loan service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-finance-transfer",
+    "path": "/assets/reference/icon-finance-transfer.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      99,
+      395,
+      218,
+      508
+    ],
+    "dimensions": [
+      119,
+      113
+    ],
+    "description": "Finance service icon",
+    "suggestedCssWidth": 37
+  },
+  {
+    "name": "icon-agency",
+    "path": "/assets/reference/icon-agency.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      347,
+      395,
+      467,
+      508
+    ],
+    "dimensions": [
+      120,
+      113
+    ],
+    "description": "Finance service icon",
+    "suggestedCssWidth": 37
+  },
+  {
+    "name": "icon-withdrawal",
+    "path": "/assets/reference/icon-withdrawal.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      593,
+      395,
+      710,
+      508
+    ],
+    "dimensions": [
+      117,
+      113
+    ],
+    "description": "Finance service icon",
+    "suggestedCssWidth": 37
+  },
+  {
+    "name": "icon-signing",
+    "path": "/assets/reference/icon-signing.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      837,
+      395,
+      955,
+      508
+    ],
+    "dimensions": [
+      118,
+      113
+    ],
+    "description": "Finance service icon",
+    "suggestedCssWidth": 37
+  },
+  {
+    "name": "icon-finance-wealth",
+    "path": "/assets/reference/icon-finance-wealth.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      1083,
+      395,
+      1203,
+      508
+    ],
+    "dimensions": [
+      120,
+      113
+    ],
+    "description": "Finance service icon",
+    "suggestedCssWidth": 37
+  },
+  {
+    "name": "icon-finance-deposit",
+    "path": "/assets/reference/icon-finance-deposit.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      97,
+      638,
+      217,
+      750
+    ],
+    "dimensions": [
+      120,
+      112
+    ],
+    "description": "Finance service icon",
+    "suggestedCssWidth": 37
+  },
+  {
+    "name": "icon-debit-application-badge",
+    "path": "/assets/reference/icon-debit-application-badge.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      347,
+      621,
+      508,
+      749
+    ],
+    "dimensions": [
+      161,
+      128
+    ],
+    "description": "Finance service icon",
+    "suggestedCssWidth": 37
+  },
+  {
+    "name": "icon-fund",
+    "path": "/assets/reference/icon-fund.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      591,
+      646,
+      707,
+      750
+    ],
+    "dimensions": [
+      116,
+      104
+    ],
+    "description": "Finance service icon",
+    "suggestedCssWidth": 37
+  },
+  {
+    "name": "icon-identity",
+    "path": "/assets/reference/icon-identity.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      836,
+      644,
+      953,
+      747
+    ],
+    "dimensions": [
+      117,
+      103
+    ],
+    "description": "Finance service icon",
+    "suggestedCssWidth": 37
+  },
+  {
+    "name": "icon-finance-all",
+    "path": "/assets/reference/icon-finance-all.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      1083,
+      644,
+      1202,
+      748
+    ],
+    "dimensions": [
+      119,
+      104
+    ],
+    "description": "Finance service icon",
+    "suggestedCssWidth": 37
+  },
+  {
+    "name": "icon-all",
+    "path": "/assets/reference/icon-all.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      1083,
+      644,
+      1202,
+      748
+    ],
+    "dimensions": [
+      119,
+      104
+    ],
+    "description": "All services icon without badge",
+    "suggestedCssWidth": 37
+  },
+  {
+    "name": "icon-debit-application",
+    "path": "/assets/reference/icon-debit-application.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      369,
+      735,
+      457,
+      822
+    ],
+    "dimensions": [
+      88,
+      87
+    ],
+    "description": "Bank card icon without badge",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-all-badge",
+    "path": "/assets/reference/icon-all-badge.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      1082,
+      1306,
+      1240,
+      1432
+    ],
+    "dimensions": [
+      158,
+      126
+    ],
+    "description": "All services icon with complete hot badge",
+    "suggestedCssWidth": 50
+  },
+  {
+    "name": "icon-profile-account",
+    "path": "/assets/reference/icon-profile-account.png",
+    "source": "codex-clipboard-1ff331fd-9e87-48de-862d-8d7b2af10d4f.png",
+    "crop": [
+      155,
+      575,
+      239,
+      663
+    ],
+    "dimensions": [
+      84,
+      88
+    ],
+    "description": "Profile service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-gift",
+    "path": "/assets/reference/icon-gift.png",
+    "source": "codex-clipboard-1ff331fd-9e87-48de-862d-8d7b2af10d4f.png",
+    "crop": [
+      452,
+      574,
+      544,
+      662
+    ],
+    "dimensions": [
+      92,
+      88
+    ],
+    "description": "Profile service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-coupon",
+    "path": "/assets/reference/icon-coupon.png",
+    "source": "codex-clipboard-1ff331fd-9e87-48de-862d-8d7b2af10d4f.png",
+    "crop": [
+      748,
+      573,
+      831,
+      661
+    ],
+    "dimensions": [
+      83,
+      88
+    ],
+    "description": "Profile service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-points",
+    "path": "/assets/reference/icon-points.png",
+    "source": "codex-clipboard-1ff331fd-9e87-48de-862d-8d7b2af10d4f.png",
+    "crop": [
+      1043,
+      574,
+      1136,
+      663
+    ],
+    "dimensions": [
+      93,
+      89
+    ],
+    "description": "Profile service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-buy-deposit",
+    "path": "/assets/reference/icon-buy-deposit.png",
+    "source": "codex-clipboard-f38e4229-5314-49f5-91c3-aa4b244fea80.png",
+    "crop": [
+      154,
+      1508,
+      240,
+      1594
+    ],
+    "dimensions": [
+      86,
+      86
+    ],
+    "description": "Account service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-manage-account",
+    "path": "/assets/reference/icon-manage-account.png",
+    "source": "codex-clipboard-f38e4229-5314-49f5-91c3-aa4b244fea80.png",
+    "crop": [
+      451,
+      1518,
+      544,
+      1594
+    ],
+    "dimensions": [
+      93,
+      76
+    ],
+    "description": "Account service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-export-bill",
+    "path": "/assets/reference/icon-export-bill.png",
+    "source": "codex-clipboard-f38e4229-5314-49f5-91c3-aa4b244fea80.png",
+    "crop": [
+      749,
+      1518,
+      842,
+      1597
+    ],
+    "dimensions": [
+      93,
+      79
+    ],
+    "description": "Account service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "icon-social-security",
+    "path": "/assets/reference/icon-social-security.png",
+    "source": "codex-clipboard-f38e4229-5314-49f5-91c3-aa4b244fea80.png",
+    "crop": [
+      1043,
+      1518,
+      1137,
+      1595
+    ],
+    "dimensions": [
+      94,
+      77
+    ],
+    "description": "Account service icon",
+    "suggestedCssWidth": 30
+  },
+  {
+    "name": "nav-home",
+    "path": "/assets/reference/nav-home.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      95,
+      2564,
+      163,
+      2637
+    ],
+    "dimensions": [
+      68,
+      73
+    ],
+    "description": "Bottom navigation icon",
+    "suggestedCssWidth": 26
+  },
+  {
+    "name": "nav-finance",
+    "path": "/assets/reference/nav-finance.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      347,
+      2563,
+      427,
+      2637
+    ],
+    "dimensions": [
+      80,
+      74
+    ],
+    "description": "Bottom navigation icon",
+    "suggestedCssWidth": 26
+  },
+  {
+    "name": "nav-loan",
+    "path": "/assets/reference/nav-loan.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      607,
+      2565,
+      683,
+      2635
+    ],
+    "dimensions": [
+      76,
+      70
+    ],
+    "description": "Bottom navigation icon",
+    "suggestedCssWidth": 26
+  },
+  {
+    "name": "nav-life",
+    "path": "/assets/reference/nav-life.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      863,
+      2563,
+      941,
+      2641
+    ],
+    "dimensions": [
+      78,
+      78
+    ],
+    "description": "Bottom navigation icon",
+    "suggestedCssWidth": 26
+  },
+  {
+    "name": "nav-profile",
+    "path": "/assets/reference/nav-profile.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      1122,
+      2563,
+      1199,
+      2640
+    ],
+    "dimensions": [
+      77,
+      77
+    ],
+    "description": "Bottom navigation icon",
+    "suggestedCssWidth": 26
+  },
+  {
+    "name": "nav-home-active",
+    "path": "/assets/reference/nav-home-active.png",
+    "source": "codex-clipboard-72ec5a28-b901-4ed9-99c0-1fc3d0bfcd48.png",
+    "crop": [
+      69,
+      2564,
+      190,
+      2686
+    ],
+    "dimensions": [
+      121,
+      122
+    ],
+    "description": "Bottom navigation icon",
+    "suggestedCssWidth": 38
+  },
+  {
+    "name": "nav-finance-active",
+    "path": "/assets/reference/nav-finance-active.png",
+    "source": "codex-clipboard-b6324e11-72a0-40b5-85a9-4f74ffa644da.png",
+    "crop": [
+      349,
+      2564,
+      426,
+      2638
+    ],
+    "dimensions": [
+      77,
+      74
+    ],
+    "description": "Bottom navigation icon",
+    "suggestedCssWidth": 26
+  },
+  {
+    "name": "nav-loan-active",
+    "path": "/assets/reference/nav-loan-active.png",
+    "source": "codex-clipboard-46d8ad1b-4a15-4559-add9-26e9336fe25d.png",
+    "crop": [
+      608,
+      2565,
+      684,
+      2638
+    ],
+    "dimensions": [
+      76,
+      73
+    ],
+    "description": "Bottom navigation icon",
+    "suggestedCssWidth": 26
+  },
+  {
+    "name": "nav-profile-active",
+    "path": "/assets/reference/nav-profile-active.png",
+    "source": "codex-clipboard-1ff331fd-9e87-48de-862d-8d7b2af10d4f.png",
+    "crop": [
+      1124,
+      2564,
+      1200,
+      2638
+    ],
+    "dimensions": [
+      76,
+      74
+    ],
+    "description": "Bottom navigation icon",
+    "suggestedCssWidth": 26
+  }
+]

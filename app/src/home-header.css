@@ -1,0 +1,73 @@
+.finance-app.page-home {
+  --home-blue: #2d78f6;
+  --home-safe-top: 50px;
+  --home-toolbar-height: 44px;
+  background: var(--home-blue);
+}
+.home-chrome {
+  position: absolute;
+  z-index: 30;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: calc(var(--home-safe-top) + var(--home-toolbar-height));
+  padding-top: var(--home-safe-top);
+  background: var(--home-blue);
+  color: #fff;
+}
+.home-topbar {
+  display: flex;
+  align-items: center;
+  height: var(--home-toolbar-height);
+  padding: 0 20px 0 14px;
+  gap: 12px;
+}
+.home-topbar button { display: flex; align-items: center; color: #fff; min-height: 30px; }
+.home-topbar .home-location { gap: 3px; min-width: 68px; flex-shrink: 0; font-size: 14px; white-space: nowrap; }
+.home-location svg { width: 11px; height: 11px; }
+.home-topbar .home-search-field {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 9px;
+  gap: 5px;
+  border-radius: 20px;
+  background: #ffffff26;
+  color: #e7f1ff;
+  font-size: 13px;
+}
+.home-search-field span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.home-search-field svg { width: 16px; height: 16px; }
+.home-header-icon { position: relative; justify-content: center; flex: 0 0 30px; }
+.home-header-icon svg { width: 21px; height: 21px; }
+.home-simple-mode span {
+  position: absolute;
+  top: -7px;
+  right: -8px;
+  background: #fff;
+  color: #e75e53;
+  border-radius: 8px;
+  font-size: 9px;
+  line-height: 14px;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+.home-compact-actions { display: flex; align-items: center; gap: 23px; flex: 1; min-width: 0; }
+.home-compact-actions button { flex-shrink: 0; }
+.home-compact-actions .feature-icon { width: 17px; height: 17px; object-fit: contain; }
+.finance-app.page-home .finance-main.with-tabs {
+  padding-top: calc(var(--home-safe-top) + var(--home-toolbar-height));
+  background: #f7f7f7;
+}
+.native-app.page-home { --home-safe-top: var(--native-safe-top); background: var(--home-blue); }
+.native-app.page-home .native-scroll { top: 0; scroll-padding-top: calc(var(--home-safe-top) + var(--home-toolbar-height)); }
+.native-app.page-home .finance-main.with-tabs { padding-top: calc(var(--home-safe-top) + var(--home-toolbar-height)); }
+
+@media (max-width: 374px) {
+  .home-topbar { gap: 7px; padding-right: 10px; padding-left: 10px; }
+  .home-compact-actions { gap: 11px; }
+  .home-topbar .home-location { font-size: 12px; }
+}
+
+.home-chrome.is-compact .home-location { min-width: 56px; }

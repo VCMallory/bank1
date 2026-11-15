@@ -1,0 +1,97 @@
+html, body, #root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: #f7f7f7;
+}
+body { -webkit-text-size-adjust: 100%; }
+button, input, select { font: inherit; }
+button { touch-action: manipulation; }
+
+/* CSS owns safe areas; the WKWebView uses contentInset: never. */
+.native-app {
+  --native-safe-top: env(safe-area-inset-top, 0px);
+  --native-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --native-tabs-height: calc(58px + var(--native-safe-bottom));
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  container-type: normal;
+}
+.native-app .native-scroll {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+  scrollbar-width: none;
+}
+.native-app.has-tabs .native-scroll { bottom: var(--native-tabs-height); }
+.native-app.has-reminder .native-scroll { bottom: calc(var(--native-tabs-height) + 38px); }
+.native-app.is-editing .native-scroll { overflow-y: hidden; }
+.native-app .finance-main { padding-top: 0; padding-bottom: calc(var(--native-safe-bottom) + 24px); }
+.native-app .finance-main.with-tabs { padding-top: 0; padding-bottom: 24px; }
+.native-app.page-home .home-top { padding-top: 20px; }
+.native-app.page-loan .loan-top {
+  padding-top: calc(var(--native-safe-top) + 12px);
+  height: calc(var(--native-safe-top) + 160px);
+  background-color: #c1a061;
+  background-size: 100% 100%;
+}
+.native-app.page-finance .finance-top { padding-top: calc(var(--native-safe-top) + 20px); }
+.native-app.page-mine .profile-top { padding-top: calc(var(--native-safe-top) + 17px); }
+.native-app .life-title { padding-top: calc(var(--native-safe-top) + 10px); }
+.native-app .screen-header {
+  height: calc(var(--native-safe-top) + 50px);
+  padding-top: calc(var(--native-safe-top) + 12px);
+}
+.native-app .screen-header > button {
+  top: calc(var(--native-safe-top) + 12px);
+  height: 38px;
+  display: flex;
+  align-items: center;
+}
+.native-status-surface {
+  position: absolute;
+  z-index: 31;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--native-safe-top);
+  overflow: hidden;
+  pointer-events: none;
+}
+.native-status-paint { position: absolute; top: 0; left: 0; pointer-events: none; }
+
+.native-app .bottom-tabs {
+  top: auto;
+  bottom: 0;
+  height: var(--native-tabs-height);
+  min-height: var(--native-tabs-height);
+  padding: 6px 0 calc(var(--native-safe-bottom) + 6px);
+  align-items: start;
+  overflow: visible;
+}
+.native-app .bottom-tabs button { min-width: 0; height: 46px; gap: 2px; justify-content: flex-start; }
+.native-app .bottom-tabs img { width: 30px; height: 24px; flex: 0 0 24px; }
+.native-app .bottom-tabs span { display: block; flex: 0 0 18px; height: 18px; font-size: 13px; line-height: 18px; white-space: nowrap; }
+.native-app .password-reminder { bottom: var(--native-tabs-height); height: 38px; padding: 9px 14px; }
+.native-app .password-reminder > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.native-app .editable { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.native-app input, .native-app textarea { -webkit-user-select: text; user-select: text; }
+
+.native-app .native-scroll::-webkit-scrollbar { display: none; }
+
+/* Horizontal rails must hand vertical native gestures to their scroll viewport. */
+.native-app .mobile-carousel { overscroll-behavior-y: auto; }

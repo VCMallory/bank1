@@ -1,0 +1,10 @@
+/* Add app-specific styles here. Keep the template-owned runtime styles in styles.css unchanged. */
+
+/* Clip transformed keyboard overflow so focusing a bottom tab cannot scroll
+   the device viewport itself. Screen content keeps its own MobileScroll. */
+[data-phone-screen] { overflow: clip; }
+
+.blank-canvas {
+  min-height: 100%;
+  padding: 72px 28px calc(var(--mobile-safe-area-height) + 34px);
+}
