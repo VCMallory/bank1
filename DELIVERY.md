@@ -67,3 +67,11 @@ APK 已验证签名及打包内容；IPA 已验证 ZIP CRC、Info.plist、iphone
 新增 app/tests/native-interactions.spec.ts 专测 native.html。本机 Edge/Chromium 已通过 9 项（含 CDP 真实触摸注入），macOS 打包流程增加 WebKit 检查（8 项及一项仅 Chromium 支持的触摸注入跳过）。WebKit 检查结果及原生包来源以本次 Actions 运行和 artifacts/package-manifest-v1.3.json 为准；这些检查不等同于 iPhone 真机安装复测。
 
 WebKit 移动环境不支持 Playwright 的 mouse.wheel。该环境的滚动位置与导航遮挡检查使用 scrollTo 移动到边界后验证 DOM 位置和命中；Chromium 保留真实 CDP 触摸滑动验证。WebKit 合成触摸验证长按状态机，不能代表 iOS 系统原生 pan 手势的真机验证。
+
+## v1.4 视频首页与状态栏
+
+首页按用户提供的13.17秒视频重新实现：蓝色从屏幕顶部绘制至系统状态栏下方，真实 iOS 时间/信号采用浅色（内置 SystemBars，未隐藏或画假状态栏），顶部工具栏固定；上滑后搜索栏收成四个快捷入口。其它页面继续采用 v1.3 安全区、底栏文字及长按编辑方案。
+
+视频独立广告、卡面和图标从原592×1280帧提取，元数据见 app/public/assets/reference/home-video-assets-manifest.json。新增双11主广告、燃油/ETC轮播、便捷民生、优惠生活、信用卡e+金、缴费通、资讯及定制首页入口。轮播支持手势和点选，自动切换时暂停干扰用户按压/编辑。所有入口继续使用已有本地页面路由，不连接银行或第三方交易系统。
+
+横向活动 Carousel 的纵向滚动链已在原生入口恢复，避免手指或滚轮落在广告上时页面上滑被截住。新增首页状态栏覆盖、固定/收缩顶栏以及广告区域滚动回归；与原有编辑、滑动取消、多指和底栏检查一起运行。设计比较见 design-qa.md；打包版本1.4(6)，验证记录与实际构建来源见 artifacts/package-manifest-v1.4.json。iPhone系统栏与真机手势仍需安装签名后的IPA复核。

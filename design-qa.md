@@ -61,3 +61,29 @@ All identified P1/P2 functional and layout defects above were fixed. P3 differen
 - This remains local demonstration access control, without banking authentication or claims of data encryption.
 
 final result: passed
+
+
+## v1.4 video home comparison
+
+Source: user-supplied video(31).mp4, 592×1280 / 30fps / 13.17s. Reference frames 0.00s and 3.29s were normalized to430×930. Implementation captures use the real native.tsx entry through a test-only fixture at430×930 with the recording's50px top and34px bottom insets. The production entry uses the actual env(safe-area-inset-*) values. Actual OS clock, signal and camera chrome are excluded from the50px comparison crop and never recreated as app markup.
+
+Evidence (same-scale paired inputs inspected): artifacts/home-video-comparison-top-v1.4.jpg and artifacts/home-video-comparison-mid-v1.4.jpg. Initial mismatch evidence: artifacts/home-video-comparison-before.jpg. Focused surfaces: fixed top toolbar and quick icons, service grid, hero/promotion imagery and civic/life card spacing.
+
+Earlier P2 findings and post-fix verification:
+- Old light-blue shortcut assets left boxes against the deeper source blue. Replaced with video-native crops; verified in final top pair.
+- Hero/menu/civic spacing and undersized service icons drifted. The hero now starts at190px and ends near337px; civic card starts near724px versus approximately725px in the reference; service icons/menu typography were aligned without changing region height.
+- Native vertical scrolling stopped when the pointer was over the horizontal promotion rail. Restored vertical scroll chaining in app-owned native.css, verified by in-app browser scroll, dedicated wheel/CDP touch regression, and compact toolbar state.
+
+Five required fidelity surfaces:
+- Typography: native -apple-system/PingFang with existing Windows fallback, source-sized service labels and section headings; CJK rasterization differs in the Windows preview (P3).
+- Spacing/layout: full-width hero, fixed safe-area toolbar, matching top/mid card positions, persistent five-tab labels. Header remains at y=0 while scroll changes; controls stay below the safe inset.
+- Colors/tokens: source-sampled blue #2d78f6 covers the topmost pixel; native iOS SystemBarsStyle.Dark selects light real status-bar content, other pages restore dark content.
+- Images: original video crops and labels retained; existing public graphic assets reused where appropriate; all25 video asset dimensions/bounds/hashes checked. The occluded third news thumbnail uses an unobscured crop of the same video's double11 art (P3).
+- Copy/content: video sections and service labels reproduced as editable/interactive UI where appropriate, with existing route behavior. The rotating source headline uses a fixed seed item in this implementation (P3).
+
+Accepted P3 differences: source recording's time/signal are OS-owned and not drawn in the browser; existing selected bottom-tab logo size is preserved; the partially visible gold civic neighbor and transient floating promotion are omitted; small icon-library/header-spacing differences remain. These do not block the requested full-bleed status background or homepage navigation/scroll behavior.
+
+Verification: browser meaningful-content/identity checks, no framework overlay, no console warnings/errors; service navigation and return, top-to-compact state and scroll position checked. Local native suite10 tests plus the new rail-gesture test passed. Protected runtime28 files unchanged. CI WebKit runs the same supported layout/hold suite; trusted mobile pan injection is Chromium-only and iPhone hardware is not covered.
+
+No unresolved P0/P1/P2 findings in the requested app-owned top and compact home states.
+final result: passed

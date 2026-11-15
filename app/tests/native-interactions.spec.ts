@@ -52,7 +52,14 @@ async function expectNavigation(page: Page) {
   const tabs = await nav.boundingBox();
   expect(scroll).not.toBeNull();
   expect(tabs).not.toBeNull();
-  expect(scroll!.y).toBeGreaterThanOrEqual(topInset);
+  if (await page.locator('.native-app').evaluate(element => element.classList.contains('page-home'))) {
+    expect(scroll!.y).toBe(0);
+    const chrome = page.locator('.home-chrome');
+    expect((await chrome.boundingBox())!.y).toBe(0);
+    expect((await chrome.locator('.home-topbar').boundingBox())!.y).toBeGreaterThanOrEqual(topInset);
+  } else {
+    expect(scroll!.y).toBeGreaterThanOrEqual(topInset);
+  }
   expect(scroll!.y + scroll!.height).toBeLessThanOrEqual(tabs!.y + 1);
 }
 
@@ -189,4 +196,50 @@ test('holding an image with a tap destination does not navigate on release', asy
   await target.dispatchEvent('click');
   await expect(page.locator('.native-app')).toHaveClass(/page-home/);
   await expect(page.getByRole('dialog', { name: '编辑图片' })).toBeVisible();
+});
+
+
+test('home covers the status area with fixed blue chrome and compacts its shortcuts on scroll', async ({ page }) => {
+  const chrome = page.locator('.home-chrome');
+  await expect(chrome).toHaveAttribute('data-compact', 'false');
+  expect(await chrome.evaluate(element => {
+    const rect = element.getBoundingClientRect();
+    const hit = document.elementFromPoint(12, 12);
+    return rect.y === 0 && rect.height >= 59 + 44 && hit !== null && element.contains(hit);
+  })).toBe(true);
+  await expectUnobscured(page.getByRole('button', { name: '搜索', exact: true }));
+  await page.locator('.native-scroll').evaluate(element => element.scrollTo({ top: 250, behavior: 'instant' }));
+  await expect(chrome).toHaveAttribute('data-compact', 'true');
+  await expect(chrome.getByRole('button', { name: '扫一扫', exact: true })).toBeVisible();
+  expect((await chrome.boundingBox())!.y).toBe(0);
+  await expectNavigation(page);
+  await page.locator('.native-scroll').evaluate(element => element.scrollTo({ top: 0, behavior: 'instant' }));
+  await expect(chrome).toHaveAttribute('data-compact', 'false');
+  await page.getByRole('navigation', { name: '主导航' }).getByRole('button', { name: '我的', exact: true }).click();
+  await expect(chrome).toHaveCount(0);
+  expect((await page.locator('.native-scroll').boundingBox())!.y).toBe(topInset);
+});
+
+test('vertical wheel and touch gestures over the promotion rail continue scrolling the page', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Trusted wheel/touch injection is not exposed for mobile WebKit; its scroll positions and layout are checked separately.');
+  const rail = page.locator('.home-content-promotion-carousel');
+  const scroll = page.locator('.native-scroll');
+  const point = await center(rail);
+  await page.mouse.move(point.x, point.y);
+  await page.mouse.wheel(0, 180);
+  await expect.poll(() => scroll.evaluate(element => element.scrollTop)).toBeGreaterThan(40);
+  await page.waitForTimeout(150);
+  await scroll.evaluate(element => element.scrollTo({ top: 0, behavior: 'instant' }));
+  await expect.poll(() => scroll.evaluate(element => element.scrollTop)).toBe(0);
+  const start = await center(rail);
+  const client = await page.context().newCDPSession(page);
+  await client.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: start.x, y: start.y, id: 1 }] });
+  for (let step = 1; step <= 8; step++) {
+    await client.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: start.x, y: start.y - step * 24, id: 1 }] });
+    await page.waitForTimeout(20);
+  }
+  await client.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await expect.poll(() => scroll.evaluate(element => element.scrollTop)).toBeGreaterThan(40);
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  expect(await page.evaluate(() => document.scrollingElement!.scrollTop)).toBe(0);
 });

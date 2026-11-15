@@ -65,3 +65,6 @@ button { touch-action: manipulation; }
 .native-app input, .native-app textarea { -webkit-user-select: text; user-select: text; }
 
 .native-app .native-scroll::-webkit-scrollbar { display: none; }
+
+/* Horizontal rails must hand vertical native gestures to their scroll viewport. */
+.native-app .mobile-carousel { overscroll-behavior-y: auto; }

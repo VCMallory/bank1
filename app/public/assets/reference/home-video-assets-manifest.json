@@ -1,0 +1,471 @@
+{
+  "source_video": "user-supplied video(31).mp4",
+  "source_size": [
+    592,
+    1280
+  ],
+  "source_fps": 30,
+  "source_duration_seconds": 13.17,
+  "coordinate_system": "bbox_ltrb = left, top, right, bottom in original decoded video pixels; right and bottom exclusive",
+  "method": "Lossless PNG crops from decoded RGB video frames; no resize, image generation, or repaint. UI labels outside illustrations are excluded.",
+  "assets": [
+    {
+      "file": "home-video-hero-double11.png",
+      "url": "/assets/reference/home-video-hero-double11.png",
+      "time_seconds": 0.0,
+      "frame_index": 0,
+      "bbox_ltrb": [
+        0,
+        262,
+        592,
+        465
+      ],
+      "pixel_size": [
+        592,
+        203
+      ],
+      "purpose": "首页双11广告主视觉；保留广告自身文字和立即查看按钮",
+      "sha256": "1a5c3aba67d7eec61fad496f8e0978b552f6e5ad353d9e719e37c2113f4f38a2"
+    },
+    {
+      "file": "home-video-banner-fuel.png",
+      "url": "/assets/reference/home-video-banner-fuel.png",
+      "time_seconds": 0.0,
+      "frame_index": 0,
+      "bbox_ltrb": [
+        23,
+        790,
+        571,
+        934
+      ],
+      "pixel_size": [
+        548,
+        144
+      ],
+      "purpose": "首页轮播燃油支付优惠广告",
+      "sha256": "b8d2a2ba79a206f8d156165af51e2fc56fdadd83975506166034a2b89dd311b4"
+    },
+    {
+      "file": "home-video-banner-etc.png",
+      "url": "/assets/reference/home-video-banner-etc.png",
+      "time_seconds": 9.9,
+      "frame_index": 297,
+      "bbox_ltrb": [
+        23,
+        279,
+        571,
+        425
+      ],
+      "pixel_size": [
+        548,
+        146
+      ],
+      "purpose": "首页轮播ETC信用卡广告",
+      "sha256": "78ce5df35138f454479f6ee79f29ed714cef2d882f540696916b1b638b335e2a"
+    },
+    {
+      "file": "home-video-life-sinopec.png",
+      "url": "/assets/reference/home-video-life-sinopec.png",
+      "time_seconds": 3.3,
+      "frame_index": 99,
+      "bbox_ltrb": [
+        78,
+        856,
+        154,
+        932
+      ],
+      "pixel_size": [
+        76,
+        76
+      ],
+      "purpose": "优惠生活中石化入口图像，不含UI标签",
+      "sha256": "28a7ed45722cdbaf73b5bdcaee79ae81aab2b4b8ea191121da59078292eec90a"
+    },
+    {
+      "file": "home-video-life-calendar.png",
+      "url": "/assets/reference/home-video-life-calendar.png",
+      "time_seconds": 3.3,
+      "frame_index": 99,
+      "bbox_ltrb": [
+        260,
+        856,
+        336,
+        932
+      ],
+      "pixel_size": [
+        76,
+        76
+      ],
+      "purpose": "优惠生活丰收日历入口图像，不含UI标签",
+      "sha256": "5b4b55c57996ee13cec94530e26ffac73cfd5b2a55dd1f7e58c5b1d53a8a3130"
+    },
+    {
+      "file": "home-video-life-thursday.png",
+      "url": "/assets/reference/home-video-life-thursday.png",
+      "time_seconds": 3.3,
+      "frame_index": 99,
+      "bbox_ltrb": [
+        441,
+        856,
+        517,
+        932
+      ],
+      "pixel_size": [
+        76,
+        76
+      ],
+      "purpose": "优惠生活丰收星期四入口图像，不含UI标签",
+      "sha256": "103e55a422333ae609e999abc92cc1df346587de4da60c86931da80faebc889e"
+    },
+    {
+      "file": "home-video-life-union.png",
+      "url": "/assets/reference/home-video-life-union.png",
+      "time_seconds": 3.3,
+      "frame_index": 99,
+      "bbox_ltrb": [
+        203,
+        1032,
+        279,
+        1108
+      ],
+      "pixel_size": [
+        76,
+        76
+      ],
+      "purpose": "优惠生活丰收联盟入口图像，不含UI标签",
+      "sha256": "2209242ab3f5b0926b1d7df2145a6faa95811f2455b7ec71c06d2a2f914e2e75"
+    },
+    {
+      "file": "home-video-life-vegetables.png",
+      "url": "/assets/reference/home-video-life-vegetables.png",
+      "time_seconds": 3.3,
+      "frame_index": 99,
+      "bbox_ltrb": [
+        481,
+        1032,
+        557,
+        1108
+      ],
+      "pixel_size": [
+        76,
+        76
+      ],
+      "purpose": "优惠生活丰收菜篮子入口图像，不含UI标签",
+      "sha256": "e298423d73fb4b1260045f2540d6042e6de84b1d9be62278edef6f585a7832cd"
+    },
+    {
+      "file": "home-video-credit-installment.png",
+      "url": "/assets/reference/home-video-credit-installment.png",
+      "time_seconds": 6.6,
+      "frame_index": 198,
+      "bbox_ltrb": [
+        22,
+        143,
+        290,
+        351
+      ],
+      "pixel_size": [
+        268,
+        208
+      ],
+      "purpose": "信用卡现金分期推广卡；包含推广图自有文字和去了解按钮",
+      "sha256": "0a55aea0a7bc48276dabf24e8b89f96a71405973c277034d5c5244cc923f0c82"
+    },
+    {
+      "file": "home-video-credit-cash.png",
+      "url": "/assets/reference/home-video-credit-cash.png",
+      "time_seconds": 6.6,
+      "frame_index": 198,
+      "bbox_ltrb": [
+        303,
+        143,
+        571,
+        351
+      ],
+      "pixel_size": [
+        268,
+        208
+      ],
+      "purpose": "信用卡透支取现推广卡；包含推广图自有文字和去了解按钮",
+      "sha256": "d5af83c0baa54c05cc681a2be70739bf4feab1cf1c6ef5c81a0436f41668e2ef"
+    },
+    {
+      "file": "home-video-payment-electricity.png",
+      "url": "/assets/reference/home-video-payment-electricity.png",
+      "time_seconds": 6.6,
+      "frame_index": 198,
+      "bbox_ltrb": [
+        67,
+        448,
+        119,
+        500
+      ],
+      "pixel_size": [
+        52,
+        52
+      ],
+      "purpose": "缴费通电费入口图像，不含UI标签",
+      "sha256": "ea8aa25eee8797bb6facf8fd27c233396bd1213e151c8dab65df1609b5daf020"
+    },
+    {
+      "file": "home-video-payment-city.png",
+      "url": "/assets/reference/home-video-payment-city.png",
+      "time_seconds": 6.6,
+      "frame_index": 198,
+      "bbox_ltrb": [
+        203,
+        448,
+        255,
+        500
+      ],
+      "pixel_size": [
+        52,
+        52
+      ],
+      "purpose": "缴费通城乡两费入口图像，不含UI标签",
+      "sha256": "90fff0b682965a493b0a6c62dbdf5ee5ba4f6cdd1ad7b5da46bfab02fe9e7209"
+    },
+    {
+      "file": "home-video-payment-property.png",
+      "url": "/assets/reference/home-video-payment-property.png",
+      "time_seconds": 6.6,
+      "frame_index": 198,
+      "bbox_ltrb": [
+        341,
+        448,
+        393,
+        500
+      ],
+      "pixel_size": [
+        52,
+        52
+      ],
+      "purpose": "缴费通物业费入口图像，不含UI标签",
+      "sha256": "1680f9f36460382fda9576bbed7a79b07fdc44ea635eb879676551ad1775c98f"
+    },
+    {
+      "file": "home-video-payment-party.png",
+      "url": "/assets/reference/home-video-payment-party.png",
+      "time_seconds": 6.6,
+      "frame_index": 198,
+      "bbox_ltrb": [
+        478,
+        448,
+        530,
+        500
+      ],
+      "pixel_size": [
+        52,
+        52
+      ],
+      "purpose": "缴费通党团费入口图像，不含UI标签",
+      "sha256": "37ef97ad5433ce934284c90f2fc50b612bd73cf22a16d95159eb677406cf5971"
+    },
+    {
+      "file": "home-video-news-sport.png",
+      "url": "/assets/reference/home-video-news-sport.png",
+      "time_seconds": 6.6,
+      "frame_index": 198,
+      "bbox_ltrb": [
+        438,
+        652,
+        550,
+        764
+      ],
+      "pixel_size": [
+        112,
+        112
+      ],
+      "purpose": "第一条丰收资讯活动缩略图",
+      "sha256": "910d7fa66756c832bca2bd4bf8c7f276d62b9502ea946ad4c425a74355bc3983"
+    },
+    {
+      "file": "home-video-news-autumn.png",
+      "url": "/assets/reference/home-video-news-autumn.png",
+      "time_seconds": 6.6,
+      "frame_index": 198,
+      "bbox_ltrb": [
+        438,
+        806,
+        550,
+        918
+      ],
+      "pixel_size": [
+        112,
+        112
+      ],
+      "purpose": "第二条丰收资讯活动缩略图",
+      "sha256": "2b2e4f166fcd06032b032bee724f27cb518b6df38080d430cbf6f2225948f374"
+    },
+    {
+      "file": "home-video-news-double11.png",
+      "url": "/assets/reference/home-video-news-double11.png",
+      "time_seconds": 0.0,
+      "frame_index": 0,
+      "bbox_ltrb": [
+        356,
+        266,
+        512,
+        422
+      ],
+      "pixel_size": [
+        156,
+        156
+      ],
+      "purpose": "第三条丰收资讯的双11主体替代裁剪；原缩略图左下角在视频中持续被临时toast遮挡",
+      "sha256": "2ca3f68d66fd818a5a68d15188f637f8961bb00286fcf432dea0e1d8b728527a",
+      "substitution": {
+        "kind": "same_video_hero_subject_crop",
+        "reason": "Original article thumbnail is partly covered by a temporary toast throughout its visible interval. This crop uses the unobstructed subject from the same double-11 hero; no generated content."
+      }
+    },
+    {
+      "file": "home-video-civic-medical.png",
+      "url": "/assets/reference/home-video-civic-medical.png",
+      "time_seconds": 3.3,
+      "frame_index": 99,
+      "bbox_ltrb": [
+        90,
+        608,
+        178,
+        696
+      ],
+      "pixel_size": [
+        88,
+        88
+      ],
+      "purpose": "便捷民生电子医保圆形入口图像，不含UI标签",
+      "sha256": "4e208e7244ed23084b143ba2c102438a8475e2b78b37aaf564e53da992e400a9"
+    },
+    {
+      "file": "home-video-civic-fund.png",
+      "url": "/assets/reference/home-video-civic-fund.png",
+      "time_seconds": 3.3,
+      "frame_index": 99,
+      "bbox_ltrb": [
+        254,
+        608,
+        342,
+        696
+      ],
+      "pixel_size": [
+        88,
+        88
+      ],
+      "purpose": "便捷民生公积金查询圆形入口图像，不含UI标签",
+      "sha256": "4332fb2dad6950633803f7119925b3b1951e897fde0303ec1e0329995f9e7e44"
+    },
+    {
+      "file": "home-video-civic-social.png",
+      "url": "/assets/reference/home-video-civic-social.png",
+      "time_seconds": 3.3,
+      "frame_index": 99,
+      "bbox_ltrb": [
+        415,
+        608,
+        503,
+        696
+      ],
+      "pixel_size": [
+        88,
+        88
+      ],
+      "purpose": "便捷民生电子社保卡圆形入口图像，不含UI标签",
+      "sha256": "380ebc57f363e65af21469f5a9d24f2b6a99a398fa256d8dd9f0765cb4741859"
+    },
+    {
+      "file": "home-video-civic-card.png",
+      "url": "/assets/reference/home-video-civic-card.png",
+      "time_seconds": 3.3,
+      "frame_index": 99,
+      "bbox_ltrb": [
+        34,
+        503,
+        559,
+        771
+      ],
+      "pixel_size": [
+        525,
+        268
+      ],
+      "purpose": "完整便捷民生独立蓝色服务卡，含三个完整圆形图像和入口标签，不含外部section标题或下一栏目",
+      "sha256": "8573c839ebee2455b8f0d1826294605cdc0f10905ec9be4789f3bdc67bcd42fa"
+    },
+    {
+      "file": "home-video-quick-scan.png",
+      "url": "/assets/reference/home-video-quick-scan.png",
+      "time_seconds": 0.0,
+      "frame_index": 0,
+      "bbox_ltrb": [
+        66,
+        168,
+        118,
+        220
+      ],
+      "pixel_size": [
+        52,
+        52
+      ],
+      "purpose": "首页扫一扫快捷图形，不含文字标签",
+      "sha256": "945a773f8e648df6ecad9d01a1aa84f155f331f49576bfbfad433c901c56d12f",
+      "background": "Original source blue background and natural image shadow preserved; no alpha conversion."
+    },
+    {
+      "file": "home-video-quick-receive.png",
+      "url": "/assets/reference/home-video-quick-receive.png",
+      "time_seconds": 0.0,
+      "frame_index": 0,
+      "bbox_ltrb": [
+        200,
+        168,
+        252,
+        220
+      ],
+      "pixel_size": [
+        52,
+        52
+      ],
+      "purpose": "首页收付款快捷图形，不含文字标签",
+      "sha256": "485f9b7a70a881757c8a2c03aa537747cf5508fdc0ef7966dc71e828d3fee0f8",
+      "background": "Original source blue background and natural image shadow preserved; no alpha conversion."
+    },
+    {
+      "file": "home-video-quick-travel.png",
+      "url": "/assets/reference/home-video-quick-travel.png",
+      "time_seconds": 0.0,
+      "frame_index": 0,
+      "bbox_ltrb": [
+        338,
+        165,
+        390,
+        217
+      ],
+      "pixel_size": [
+        52,
+        52
+      ],
+      "purpose": "首页出行快捷图形，不含文字标签",
+      "sha256": "984b5cf231ccc8d4a3f6f1756bf0dbf0f71919a2758f77abdd7a914fbe1162e9",
+      "background": "Original source blue background and natural image shadow preserved; no alpha conversion."
+    },
+    {
+      "file": "home-video-quick-wallet.png",
+      "url": "/assets/reference/home-video-quick-wallet.png",
+      "time_seconds": 0.0,
+      "frame_index": 0,
+      "bbox_ltrb": [
+        478,
+        168,
+        530,
+        220
+      ],
+      "pixel_size": [
+        52,
+        52
+      ],
+      "purpose": "首页电子卡包快捷图形，不含文字标签",
+      "sha256": "53188e629963f9be478041415266143dac1796aacea9345d4385821b57dbe0a8",
+      "background": "Original source blue background and natural image shadow preserved; no alpha conversion."
+    }
+  ]
+}
