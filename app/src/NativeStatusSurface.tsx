@@ -28,7 +28,7 @@ export default function NativeStatusSurface({ page, revision, shellRef }: {
     };
     update();
     const observer = new ResizeObserver(update);
-    observer.observe(source);
+    observer.observe(source, { box: 'border-box' });
     window.addEventListener('resize', update);
     return () => { observer.disconnect(); window.removeEventListener('resize', update); };
   }, [page, revision, shellRef]);
