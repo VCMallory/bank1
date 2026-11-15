@@ -1,4 +1,6 @@
 import FinanceApp from './FinanceApp';
+import { useKeyboard } from './mobile';
 export default function Prototype() {
-  return <FinanceApp/>;
+  const keyboard = useKeyboard();
+  return <FinanceApp onNavigate={keyboard.hide}/>;
 }
