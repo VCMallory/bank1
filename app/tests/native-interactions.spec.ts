@@ -87,24 +87,34 @@ async function loanSummary(page: Page) {
   return page.locator('.loan-summary .available');
 }
 
-test('home, loans and profile scroll both ways while all five tab captions remain visible', async ({ page }) => {
+test('home, loans and profile scroll both ways while all five tab captions remain visible', async ({ page, browserName }) => {
   for (const label of ['首页', '贷款', '我的']) {
     await page.getByRole('navigation', { name: '主导航' }).getByRole('button', { name: label, exact: true }).click();
     await expectNavigation(page);
     const scroll = page.locator('.native-scroll');
     expect(await scroll.evaluate(element => element.scrollHeight - element.clientHeight)).toBeGreaterThan(0);
-    await page.mouse.move(210, 450);
-    await page.mouse.wheel(0, 10000);
+    if (browserName === 'webkit') {
+      // Mobile WebKit does not expose wheel input in Playwright. Advancing the
+      // scroll position verifies reachable content/layout, not a native iOS pan.
+      await scroll.evaluate(element => element.scrollTo(0, element.scrollHeight));
+    } else {
+      await page.mouse.move(210, 450);
+      await page.mouse.wheel(0, 10000);
+    }
     await expect.poll(() => scroll.evaluate(element => element.scrollTop + element.clientHeight - element.scrollHeight)).toBeGreaterThanOrEqual(-2);
     await expectNavigation(page);
     if (label === '我的') await expectUnobscured(page.getByRole('button', { name: '退出登录', exact: true }));
-    await page.mouse.wheel(0, -10000);
+    if (browserName === 'webkit') {
+      await scroll.evaluate(element => element.scrollTo(0, 0));
+    } else {
+      await page.mouse.wheel(0, -10000);
+    }
     await expect.poll(() => scroll.evaluate(element => element.scrollTop)).toBeLessThanOrEqual(1);
   }
 });
 
 test('a native touch swipe starting on an editable image scrolls without opening the editor', async ({ page, browserName }) => {
-  test.skip(browserName !== 'chromium', 'Trusted native touch injection is only available through Chromium CDP; WebKit uses wheel scrolling above.');
+  test.skip(browserName !== 'chromium', 'Trusted native touch injection is only available through Chromium CDP; WebKit validates scroll positions/layout above, not a native iOS pan.');
   await page.setViewportSize({ width: 430, height: 800 });
   const image = page.locator('.home-hero');
   const start = await center(image);

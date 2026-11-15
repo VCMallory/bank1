@@ -65,3 +65,5 @@ APK 已验证签名及打包内容；IPA 已验证 ZIP CRC、Info.plist、iphone
 长按约 600ms 进入编辑，12px 内小幅抖动容忍；TouchEvent 与鼠标 PointerEvent 分开处理，滚动/取消/多指取消待触发长按，嵌套编辑与释放点击去重。原生编辑区域禁用系统文本选择及图片 callout，输入框仍可选字；打开编辑器时背景滚动冻结。
 
 新增 app/tests/native-interactions.spec.ts 专测 native.html。本机 Edge/Chromium 已通过 9 项（含 CDP 真实触摸注入），macOS 打包流程增加 WebKit 检查（8 项及一项仅 Chromium 支持的触摸注入跳过）。WebKit 检查结果及原生包来源以本次 Actions 运行和 artifacts/package-manifest-v1.3.json 为准；这些检查不等同于 iPhone 真机安装复测。
+
+WebKit 移动环境不支持 Playwright 的 mouse.wheel。该环境的滚动位置与导航遮挡检查使用 scrollTo 移动到边界后验证 DOM 位置和命中；Chromium 保留真实 CDP 触摸滑动验证。WebKit 合成触摸验证长按状态机，不能代表 iOS 系统原生 pan 手势的真机验证。
