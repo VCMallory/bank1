@@ -49,4 +49,15 @@ P3 follow-up: some decorative payment-card illustrations, header controls and mi
 
 All identified P1/P2 functional and layout defects above were fixed. P3 differences and deliberate demonstration constraints are recorded, so this pass accepts the local demonstration scope, not strict pixel identity.
 
+## 2026-11-15 login-gate revision
+
+- Renamed the identifiable demonstration app to 丰收互联（演示）, with an original blue/green river icon carrying a large permanent 演示 label. Official indistinguishable branding and removal of all demonstration identity were not implemented.
+- Removed the permanent long-press hint button and empty-image/empty-loan long-press text; the gesture and data manager remain available after login.
+- Centralized navigation, all tab destinations, editing via long press/context menu/F2, and editor mounting behind the local demo session gate. Only home/login are public; unknown routes are private.
+- Login resumes the exact requested route or image editor. Logout clears protected page history, editor, pending action, form fields and visible-balance state, then returns home. Cross-tab logout is handled.
+- Browser checks: logged out then opened finance/loan/life/mine; each showed login, with zero account/loan/transaction/asset nodes. Cancelled login returns home. Home transfer required login then resumed transfer. Home hero context-menu edit required login then resumed the matching image editor. No browser error logs.
+- Evidence: artifacts/qa/login-gate-home.jpg and login-gate-required.jpg; normalized 393×852 device screen at 1400×1100 browser viewport. No page layout changes beyond the removed hint.
+- TypeScript passed; model 12 + session 8 = 20 tests passed; all 28 protected runtime hashes passed.
+- This remains local demonstration access control, without banking authentication or claims of data encryption.
+
 final result: passed
