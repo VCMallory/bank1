@@ -1,0 +1,76 @@
+name: Build Android APK and unsigned iPhone IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, main, 'codex/**']
+    paths: ['app/**', '.github/workflows/build-mobile.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Android installable debug APK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build:native
+      - run: npx cap sync android
+      - run: chmod +x android/gradlew && cd android && ./gradlew assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: finance-demo-android-apk
+          path: app/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
+
+  ios:
+    name: iPhone arm64 unsigned IPA (macOS)
+    runs-on: macos-15
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Select supported Xcode
+        run: |
+          XCODE_APP=$(find /Applications -maxdepth 1 -name 'Xcode_26*.app' | sort -V | tail -n 1)
+          if [ -z "$XCODE_APP" ]; then echo 'Xcode 26+ is required'; exit 1; fi
+          sudo xcode-select -s "$XCODE_APP/Contents/Developer"
+          xcodebuild -version
+      - run: npm ci --no-audit --no-fund
+      - name: Build unsigned device IPA
+        run: bash scripts/build-unsigned-ipa.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: finance-demo-iphone-unsigned-ipa
+          path: |
+            artifacts/finance-demo-unsigned.ipa
+            artifacts/ios-architectures.txt
+          if-no-files-found: error
+          retention-days: 30

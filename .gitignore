@@ -1,0 +1,13 @@
+app/node_modules/
+app/dist/
+app/dist-native/
+app/.native-build/
+app/android/local.properties
+app/android/.gradle/
+app/android/**/build/
+app/ios/App/build/
+artifacts/
+*.keystore
+*.jks
+.env*
+*.log
