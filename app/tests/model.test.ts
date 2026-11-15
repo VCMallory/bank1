@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createDefaultData, validateData, validDate, validDateTime, money, newId, readImage } from '../src/model.ts';
+import { createDefaultData, validateData, validDate, validDateTime, money, newId, readImage, transactionAccountId, filterTransactions, latestTransactionMonth, type Transaction } from '../src/model.ts';
 
 test('default data can be exported and imported without losing fields', () => {
   const data = createDefaultData();
@@ -22,6 +22,73 @@ test('edited balances, negative outflows and added rows round-trip', () => {
   assert.equal(saved.accounts[0].balance, 987.65);
   assert.equal(saved.transactions.at(-1)?.amount, -120.5);
   assert.equal(saved.transactions.at(-1)?.balance, -10);
+});
+
+test('version 1 JSON without transaction owners retains every existing transaction', () => {
+  const legacy = createDefaultData();
+  for (const transaction of legacy.transactions) delete transaction.accountId;
+  legacy.transactions.push({ ...legacy.transactions[0], id: 'existing-november', title: '转出', date: '2026-11-21 10:00:00', amount: -321.45 });
+  const saved = validateData(JSON.parse(JSON.stringify(legacy)));
+  assert.equal(saved.version, 1);
+  assert.deepEqual(saved.transactions, legacy.transactions);
+  assert.equal(saved.transactions.every(transaction => !('accountId' in transaction)), true);
+  assert.equal(transactionAccountId(saved.transactions[2], saved.accounts), saved.accounts[0].id);
+  assert.equal(latestTransactionMonth(saved.transactions, saved.accounts, saved.accounts[0].id), '2026-11');
+  assert.deepEqual(filterTransactions(saved.transactions, saved.accounts, saved.accounts[0].id, '2026-11').map(transaction => transaction.id), ['existing-november']);
+});
+
+test('transaction owner and counterparty account remain separate through JSON round-trips', () => {
+  const data = createDefaultData();
+  data.transactions[0].accountId = data.accounts[1].id;
+  const saved = validateData(JSON.parse(JSON.stringify(data)));
+  assert.equal(saved.transactions[0].accountId, data.accounts[1].id);
+  assert.equal(saved.transactions[0].account, '62848****1877');
+  assert.equal(transactionAccountId(saved.transactions[0], saved.accounts), data.accounts[1].id);
+  assert.deepEqual(filterTransactions(saved.transactions, saved.accounts, data.accounts[0].id, '2026-10').map(transaction => transaction.id), ['transaction-in']);
+  assert.deepEqual(filterTransactions(saved.transactions, saved.accounts, data.accounts[1].id, '2026-10').map(transaction => transaction.id), ['transaction-out']);
+});
+
+test('missing owner references stay recoverable in the unassigned group', () => {
+  const data = createDefaultData();
+  const orphan: Transaction = { ...data.transactions[0], accountId: 'deleted-account' };
+  const unassigned: Transaction = { ...data.transactions[1], accountId: '' };
+  const saved = validateData({ ...data, transactions: [orphan, unassigned] });
+  assert.equal(saved.transactions[0].accountId, 'deleted-account');
+  assert.equal(transactionAccountId(orphan, data.accounts), '');
+  assert.equal(transactionAccountId(unassigned, data.accounts), '');
+  assert.equal(transactionAccountId({}, []), '');
+  assert.deepEqual(filterTransactions(saved.transactions, saved.accounts, '', '2026-10').map(transaction => transaction.id), ['transaction-out', 'transaction-in']);
+  const withoutAccounts = validateData({ ...saved, accounts: [] });
+  assert.deepEqual(withoutAccounts.transactions, saved.transactions);
+  assert.equal(filterTransactions(withoutAccounts.transactions, [], '', '2026-10').length, 2);
+  saved.transactions[0].accountId = saved.accounts[1].id;
+  assert.equal(transactionAccountId(validateData(saved).transactions[0], saved.accounts), saved.accounts[1].id);
+});
+
+test('account month filtering orders newest first without mutating input or equal-date order', () => {
+  const data = createDefaultData();
+  const base = data.transactions[0];
+  const rows: readonly Transaction[] = Object.freeze([
+    { ...base, id: 'older', date: '2026-11-20 12:00:00' },
+    { ...base, id: 'same-time-first', date: '2026-11-21 12:00:00' },
+    { ...base, id: 'other-account', accountId: data.accounts[1].id, date: '2026-12-21 12:00:00' },
+    { ...base, id: 'same-time-second', date: '2026-11-21 12:00:00' },
+    { ...base, id: 'other-month', date: '2026-10-21 12:00:00' },
+  ]);
+  const before = rows.map(transaction => transaction.id);
+  assert.deepEqual(filterTransactions(rows, data.accounts, data.accounts[0].id, '2026-11').map(transaction => transaction.id), ['same-time-first', 'same-time-second', 'older']);
+  assert.deepEqual(rows.map(transaction => transaction.id), before);
+  assert.equal(latestTransactionMonth(rows, data.accounts, data.accounts[0].id), '2026-11');
+  assert.equal(latestTransactionMonth(rows, data.accounts, data.accounts[1].id), '2026-12');
+  assert.equal(latestTransactionMonth([], data.accounts, data.accounts[1].id, '2027-01'), '2027-01');
+});
+
+test('optional transaction owners reject malformed fields while retaining valid orphan identifiers', () => {
+  const data = createDefaultData();
+  for (const accountId of [null, 123, [], {}, 'x'.repeat(301)]) {
+    assert.throws(() => validateData({ ...data, transactions: [{ ...data.transactions[0], accountId }] }));
+  }
+  assert.equal(validateData({ ...data, transactions: [{ ...data.transactions[0], accountId: 'imported-account-not-present' }] }).transactions[0].accountId, 'imported-account-not-present');
 });
 
 test('deleting data and clearing image assets are valid', () => {

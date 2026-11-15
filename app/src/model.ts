@@ -3,7 +3,7 @@ import { useCallback, useRef, useState, useEffect, type PointerEvent, type Mouse
 export type Profile = { name: string; phone: string; lastLogin: string; assets: number; liabilities: number; income: number; expense: number };
 export type Loan = { id: string; name: string; tail: string; bank: string; principal: number; available: number; rate: number; start: string; end: string };
 export type Account = { id: string; bank: string; type: string; number: string; balance: number; image: string };
-export type Transaction = { id: string; title: string; amount: number; balance: number; date: string; counterparty: string; account: string; channel: string; branch: string; purpose: string };
+export type Transaction = { id: string; title: string; amount: number; balance: number; date: string; counterparty: string; account: string; accountId?: string; channel: string; branch: string; purpose: string };
 export type AppData = { version: 1; profile: Profile; loanSummary: { available: number; principal: number }; loans: Loan[]; accounts: Account[]; transactions: Transaction[]; images: Record<string, string> };
 export type EditTarget = { kind: 'profile' | 'summary' | 'loan' | 'account' | 'transaction' | 'image' | 'manage'; id?: string; key?: string };
 const STORAGE_KEY = 'harvest-finance-demo:v1';
@@ -20,8 +20,8 @@ export function createDefaultData(): AppData {
       { id: 'account-2', bank: '义乌农商银行', type: '电子账户', number: '623540****9007', balance: 0, image: '/assets/reference/account-electronic-card.png' },
     ],
     transactions: [
-      { id: 'transaction-out', title: '受托支付', amount: -3400000, balance: 26.41, date: '2026-10-16 14:39:09', counterparty: '收款人', account: '62848****1877', channel: '移动前台系统（丰收互联）', branch: '义乌农商银行城站分理处', purpose: '受托支付' },
-      { id: 'transaction-in', title: '互联网放', amount: 3400000, balance: 3400026.41, date: '2026-10-16 14:39:09', counterparty: '用户', account: '501017****6250', channel: '移动前台系统（丰收互联）', branch: '义乌农商银行城站分理处', purpose: '互联网放款' },
+      { id: 'transaction-out', title: '受托支付', amount: -3400000, balance: 26.41, date: '2026-10-16 14:39:09', counterparty: '收款人', account: '62848****1877', accountId: 'account-1', channel: '移动前台系统（丰收互联）', branch: '义乌农商银行城站分理处', purpose: '受托支付' },
+      { id: 'transaction-in', title: '互联网放', amount: 3400000, balance: 3400026.41, date: '2026-10-16 14:39:09', counterparty: '用户', account: '501017****6250', accountId: 'account-1', channel: '移动前台系统（丰收互联）', branch: '义乌农商银行城站分理处', purpose: '互联网放款' },
     ],
     images: {},
   };
@@ -54,6 +54,7 @@ export function validateData(value: unknown): AppData {
   requireRows(value.loans, ['name', 'tail', 'bank', 'start', 'end'], ['principal', 'available', 'rate'], '贷款');
   requireRows(value.accounts, ['bank', 'type', 'number'], ['balance'], '账户');
   requireRows(value.transactions, ['title', 'date', 'counterparty', 'account', 'channel', 'branch', 'purpose'], ['amount', 'balance'], '交易');
+  if (value.transactions.some(item => item.accountId !== undefined && !validText(item.accountId))) throw new Error('交易所属账户格式不正确。');
   if (value.accounts.some(item => !validImage(item.image))) throw new Error('账户图片格式不正确。');
   if (value.loans.some(item => !validDate(item.start as string) || !validDate(item.end as string))) throw new Error('贷款日期请使用 YYYY-MM-DD 格式。');
   if (value.transactions.some(item => !validDateTime(item.date as string))) throw new Error('交易时间请使用 YYYY-MM-DD HH:mm:ss 格式。');
@@ -66,7 +67,10 @@ export function validateData(value: unknown): AppData {
     loanSummary: pick(value.loanSummary, ['available', 'principal']) as AppData['loanSummary'],
     loans: value.loans.map(item => pick(item, ['id', 'name', 'tail', 'bank', 'principal', 'available', 'rate', 'start', 'end']) as Loan),
     accounts: value.accounts.map(item => pick(item, ['id', 'bank', 'type', 'number', 'balance', 'image']) as Account),
-    transactions: value.transactions.map(item => pick(item, ['id', 'title', 'amount', 'balance', 'date', 'counterparty', 'account', 'channel', 'branch', 'purpose']) as Transaction),
+    transactions: value.transactions.map(item => ({
+      ...pick(item, ['id', 'title', 'amount', 'balance', 'date', 'counterparty', 'account', 'channel', 'branch', 'purpose']),
+      ...(item.accountId === undefined ? {} : { accountId: item.accountId }),
+    }) as Transaction),
     images: Object.fromEntries(Object.entries(value.images)) as Record<string, string>,
   };
 }
@@ -80,6 +84,29 @@ export function validDateTime(value: string): boolean {
 }
 export const money = (amount: number) => Number.isFinite(amount) ? amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00';
 export const newId = (prefix: string) => `${prefix}-${globalThis.crypto?.randomUUID?.() || Date.now().toString(36) + Math.random().toString(36).slice(2)}`;
+
+/** Version 1 records without an owner retain their original first-account behavior. */
+export function transactionAccountId(transaction: Pick<Transaction, 'accountId'>, accounts: readonly Account[]): string {
+  if (transaction.accountId === undefined) return accounts[0]?.id ?? '';
+  return accounts.some(account => account.id === transaction.accountId) ? transaction.accountId : '';
+}
+
+export function filterTransactions(transactions: readonly Transaction[], accounts: readonly Account[], accountId: string, month: string): Transaction[] {
+  return transactions.filter(transaction => transactionAccountId(transaction, accounts) === accountId && transaction.date.slice(0, 7) === month)
+    .sort((left, right) => right.date.localeCompare(left.date));
+}
+
+export function latestTransactionMonth(transactions: readonly Transaction[], accounts: readonly Account[], accountId: string, fallback?: string): string {
+  let latest = '';
+  for (const transaction of transactions) {
+    const month = transaction.date.slice(0, 7);
+    if (transactionAccountId(transaction, accounts) === accountId && month > latest) latest = month;
+  }
+  if (latest) return latest;
+  if (fallback !== undefined) return fallback;
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+}
 
 function initialState(): { data: AppData; error: string | null } {
   try {

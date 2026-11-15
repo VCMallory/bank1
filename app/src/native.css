@@ -25,7 +25,7 @@ button { touch-action: manipulation; }
 }
 .native-app .native-scroll {
   position: absolute;
-  top: var(--native-safe-top);
+  top: 0;
   right: 0;
   bottom: 0;
   left: 0;
@@ -40,12 +40,39 @@ button { touch-action: manipulation; }
 .native-app.has-tabs .native-scroll { bottom: var(--native-tabs-height); }
 .native-app.has-reminder .native-scroll { bottom: calc(var(--native-tabs-height) + 38px); }
 .native-app.is-editing .native-scroll { overflow-y: hidden; }
-.native-app .finance-main { padding-top: 12px; padding-bottom: calc(var(--native-safe-bottom) + 24px); }
+.native-app .finance-main { padding-top: 0; padding-bottom: calc(var(--native-safe-bottom) + 24px); }
 .native-app .finance-main.with-tabs { padding-top: 0; padding-bottom: 24px; }
 .native-app.page-home .home-top { padding-top: 20px; }
-.native-app.page-loan .loan-top { padding-top: 12px; height: 160px; }
-.native-app.page-finance .finance-top { padding-top: 20px; }
-.native-app.page-mine .profile-top { padding-top: 17px; }
+.native-app.page-loan .loan-top {
+  padding-top: calc(var(--native-safe-top) + 12px);
+  height: calc(var(--native-safe-top) + 160px);
+  background-color: #c1a061;
+  background-size: 100% 100%;
+}
+.native-app.page-finance .finance-top { padding-top: calc(var(--native-safe-top) + 20px); }
+.native-app.page-mine .profile-top { padding-top: calc(var(--native-safe-top) + 17px); }
+.native-app .life-title { padding-top: calc(var(--native-safe-top) + 10px); }
+.native-app .screen-header {
+  height: calc(var(--native-safe-top) + 50px);
+  padding-top: calc(var(--native-safe-top) + 12px);
+}
+.native-app .screen-header > button {
+  top: calc(var(--native-safe-top) + 12px);
+  height: 38px;
+  display: flex;
+  align-items: center;
+}
+.native-status-surface {
+  position: absolute;
+  z-index: 31;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--native-safe-top);
+  overflow: hidden;
+  pointer-events: none;
+}
+.native-status-paint { position: absolute; top: 0; left: 0; pointer-events: none; }
 
 .native-app .bottom-tabs {
   top: auto;

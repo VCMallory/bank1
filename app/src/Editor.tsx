@@ -1,12 +1,12 @@
 import { useState, type ChangeEvent, type FormEvent, type InputHTMLAttributes } from 'react';
 import { BottomSheet, KeyboardInput, useKeyboard } from './mobile';
-import { createDefaultData, newId, readImage, useStore, type EditTarget, type Loan, type Account, type Transaction } from './model';
+import { createDefaultData, newId, readImage, transactionAccountId, useStore, type EditTarget, type Loan, type Account, type Transaction } from './model';
 import './editor.css';
 export { useLongPress } from './model';
 export type { EditTarget } from './model';
 
 type Store = ReturnType<typeof useStore>;
-type Props = { target: EditTarget | null; onClose: () => void; store: Store; native?: boolean };
+type Props = { target: EditTarget | null; onClose: () => void; store: Store; native?: boolean; defaultAccountId?: string; onTransactionSaved?: (transaction: Transaction) => void };
 type Field = { name: string; label: string; number?: boolean; type?: string };
 const fields: Record<string, Field[]> = {
   profile: [{ name: 'name', label: '显示姓名' }, { name: 'phone', label: '显示手机号' }, { name: 'lastLogin', label: '上次登录时间' }, { name: 'assets', label: '总资产（元）', number: true }, { name: 'liabilities', label: '总负债（元）', number: true }, { name: 'income', label: '本月收入（元）', number: true }, { name: 'expense', label: '本月支出（元）', number: true }],
@@ -32,7 +32,7 @@ async function copyBackup(text: string): Promise<void> {
   }
 }
 
-function startingValue(target: EditTarget, store: Store): Record<string, string> {
+function startingValue(target: EditTarget, store: Store, defaultAccountId?: string): Record<string, string> {
   const today = new Date().toISOString().slice(0, 10);
   const defaults = createDefaultData();
   let source: object = {};
@@ -40,14 +40,19 @@ function startingValue(target: EditTarget, store: Store): Record<string, string>
   if (target.kind === 'summary') source = store.data.loanSummary;
   if (target.kind === 'loan') source = store.data.loans.find(item => item.id === target.id) || { ...defaults.loans[0], id: newId('loan'), principal: 0, available: 0, start: today };
   if (target.kind === 'account') source = store.data.accounts.find(item => item.id === target.id) || { ...defaults.accounts[0], id: newId('account'), number: '****0000', balance: 0 };
-  if (target.kind === 'transaction') source = store.data.transactions.find(item => item.id === target.id) || { ...defaults.transactions[0], id: newId('transaction'), title: '转入', amount: 0, balance: 0, date: `${today} 12:00:00`, counterparty: '用户', purpose: '交易' };
+  if (target.kind === 'transaction') {
+    const existing = store.data.transactions.find(item => item.id === target.id);
+    const accountId = store.data.accounts.find(account => account.id === defaultAccountId)?.id ?? store.data.accounts[0]?.id ?? '';
+    source = existing ? { ...existing, accountId: existing.accountId ?? transactionAccountId(existing, store.data.accounts) }
+      : { ...defaults.transactions[0], id: newId('transaction'), title: '转入', amount: 0, balance: 0, date: `${today} 12:00:00`, counterparty: '用户', purpose: '交易', accountId };
+  }
   return Object.fromEntries(Object.entries(source).map(([key, value]) => [key, String(value)]));
 }
 
-export default function Editor({ target, onClose, store, native = false }: Props) {
+export default function Editor({ target, onClose, store, native = false, defaultAccountId, onTransactionSaved }: Props) {
   if (!target) return null;
-  return native ? <div className="demo-editor-overlay" onClick={onClose}><section className="demo-editor-panel" role="dialog" aria-modal="true" aria-label={titles[target.kind]} onClick={event => event.stopPropagation()}><EditorBody key={`${target.kind}:${target.id}:${target.key}`} {...{ target, store, native, onClose }} /></section></div>
-    : <BottomSheet open onOpenChange={open => { if (!open) onClose(); }} title={titles[target.kind]} snap={0.94}><TemplateEditor key={`${target.kind}:${target.id}:${target.key}`} {...{ target, store, native, onClose }} /></BottomSheet>;
+  return native ? <div className="demo-editor-overlay" onClick={onClose}><section className="demo-editor-panel" role="dialog" aria-modal="true" aria-label={titles[target.kind]} onClick={event => event.stopPropagation()}><EditorBody key={`${target.kind}:${target.id}:${target.key}`} {...{ target, store, native, onClose, defaultAccountId, onTransactionSaved }} /></section></div>
+    : <BottomSheet open onOpenChange={open => { if (!open) onClose(); }} title={titles[target.kind]} snap={0.94}><TemplateEditor key={`${target.kind}:${target.id}:${target.key}`} {...{ target, store, native, onClose, defaultAccountId, onTransactionSaved }} /></BottomSheet>;
 }
 export { Editor };
 
@@ -56,13 +61,13 @@ function TemplateEditor(props: Props & { target: EditTarget }) {
   return <div className="demo-editor-template"><EditorBody {...props} dismissKeyboard={keyboard.hide} onClose={() => { keyboard.hide(); props.onClose(); }} /></div>;
 }
 
-function EditorBody({ target, onClose, store, native, dismissKeyboard }: Props & { target: EditTarget; dismissKeyboard?: () => void }) {
+function EditorBody({ target, onClose, store, native, dismissKeyboard, defaultAccountId, onTransactionSaved }: Props & { target: EditTarget; dismissKeyboard?: () => void }) {
   const [selected, setSelected] = useState<EditTarget | null>(null);
   const [exportJson, setExportJson] = useState('');
   const [notice, setNotice] = useState('');
   const [resetConfirm, setResetConfirm] = useState(false);
-  if (selected) return <DataForm key={`${selected.kind}:${selected.id}`} target={selected} onClose={() => { dismissKeyboard?.(); setSelected(null); }} store={store} native={native} />;
-  if (target.kind !== 'manage') return <DataForm target={target} onClose={onClose} store={store} native={native} />;
+  if (selected) return <DataForm key={`${selected.kind}:${selected.id}`} target={selected} onClose={() => { dismissKeyboard?.(); setSelected(null); }} {...{ store, native, defaultAccountId, onTransactionSaved }} />;
+  if (target.kind !== 'manage') return <DataForm target={target} {...{ onClose, store, native, defaultAccountId, onTransactionSaved }} />;
   const exportFile = () => {
     const json = store.exportData(); setExportJson(json);
     if (native) { setNotice('数据已生成，可复制保存。'); return; }
@@ -97,14 +102,15 @@ function EditorBody({ target, onClose, store, native, dismissKeyboard }: Props &
   </div>;
 }
 
-function DataForm({ target, onClose, store, native }: Props & { target: EditTarget }) {
-  const [values, setValues] = useState(() => startingValue(target, store));
+function DataForm({ target, onClose, store, native, defaultAccountId, onTransactionSaved }: Props & { target: EditTarget }) {
+  const [values, setValues] = useState(() => startingValue(target, store, defaultAccountId));
   const originalImage = target.id || (target.key?.startsWith('/assets/') ? target.key : '') || '';
   const [image, setImage] = useState(() => target.kind === 'image' ? store.data.images[target.key || ''] ?? originalImage : target.kind === 'account' ? store.data.images[`account-${target.id}`] ?? values.image ?? '' : values.image ?? '');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState(false);
   const isNew = !target.id && ['loan', 'account', 'transaction'].includes(target.kind);
+  const needsAccount = target.kind === 'transaction' && isNew && store.data.accounts.length === 0;
   const title = isNew ? titles[target.kind].replace('编辑', '新增') : titles[target.kind];
   const changeImage = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.[0]; event.currentTarget.value = ''; if (!file) return;
@@ -114,6 +120,8 @@ function DataForm({ target, onClose, store, native }: Props & { target: EditTarg
   };
   const save = (event: FormEvent) => {
     event.preventDefault(); setError('');
+    if (needsAccount) { setError('请先在数据管理中新增账户，再添加交易。'); return; }
+    if (target.kind === 'transaction' && isNew && !store.data.accounts.some(account => account.id === values.accountId)) { setError('请选择交易所属账户。'); return; }
     const next: Record<string, string | number> = { ...values };
     for (const field of fields[target.kind] || []) {
       if (field.number) {
@@ -130,7 +138,10 @@ function DataForm({ target, onClose, store, native }: Props & { target: EditTarg
       if (target.kind === 'account') { const record = { ...next, image } as unknown as Account; const index = draft.accounts.findIndex(item => item.id === target.id); if (index < 0) draft.accounts.push(record); else draft.accounts[index] = record; delete draft.images[`account-${record.id}`]; }
       if (target.kind === 'transaction') { const index = draft.transactions.findIndex(item => item.id === target.id); if (index < 0) draft.transactions.push(next as unknown as Transaction); else draft.transactions[index] = next as unknown as Transaction; }
     });
-    if (ok) onClose();
+    if (ok) {
+      onClose();
+      if (target.kind === 'transaction') onTransactionSaved?.({ ...next } as unknown as Transaction);
+    }
   };
   const remove = () => {
     if (!deleting) { setDeleting(true); return; }
@@ -146,10 +157,15 @@ function DataForm({ target, onClose, store, native }: Props & { target: EditTarg
   return <form className="demo-editor-content" onSubmit={save}>
     <div className="demo-editor-heading"><h2>{title}</h2><button type="button" onClick={onClose} aria-label="关闭编辑器">关闭</button></div>
     <p className="demo-editor-help">修改仅保存在本机数据中。</p>
+    {target.kind === 'transaction' ? <label className="demo-editor-field" htmlFor="edit-accountId"><span>所属账户</span><select id="edit-accountId" name="accountId" value={values.accountId ?? ''} disabled={store.data.accounts.length === 0} onChange={event => setValues(previous => ({ ...previous, accountId: event.target.value }))}>
+      {!store.data.accounts.some(account => account.id === values.accountId) ? <option value={values.accountId ?? ''}>{store.data.accounts.length ? '未关联账户（可重新选择）' : '暂无账户'}</option> : null}
+      {store.data.accounts.map(account => <option key={account.id} value={account.id}>{account.bank} · {account.type} · {account.number}</option>)}
+    </select></label> : null}
+    {needsAccount ? <p className="demo-editor-help" role="status">请先在数据管理中新增账户，再添加交易。</p> : null}
     {(fields[target.kind] || []).map(field => <label className="demo-editor-field" key={field.name} htmlFor={`edit-${field.name}`}><span>{field.label}</span>{native ? <input {...inputProps(field)} /> : <KeyboardInput {...inputProps(field)} />}</label>)}
     {target.kind === 'account' || target.kind === 'image' ? <div className="demo-image-field"><span>图片</span>{image ? <img src={image} alt="当前图片预览" /> : <p className="demo-editor-help">此位置暂不显示图片</p>}<label className="demo-file-button">{busy ? '正在处理…' : '选择本机图片'}<input type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif" aria-label="选择本机图片" disabled={busy} onChange={changeImage} /></label>
       <button type="button" onClick={() => setImage('')}>清空图片</button>{target.kind === 'image' && originalImage ? <button type="button" onClick={() => setImage(originalImage)}>使用原始图片</button> : null}</div> : null}
     {error || store.error ? <p role="alert" className="demo-editor-error">{error || store.error}</p> : null}
-    <div className="demo-editor-footer"><button className="demo-save" type="submit" disabled={busy}>保存修改</button>{target.id || target.kind === 'image' ? <button type="button" className="demo-danger" onClick={remove}>{deleting ? '再次点击确认删除' : target.kind === 'image' ? '删除此图片' : '删除这条数据'}</button> : null}{deleting ? <button type="button" onClick={() => setDeleting(false)}>取消删除</button> : null}</div>
+    <div className="demo-editor-footer"><button className="demo-save" type="submit" disabled={busy || needsAccount}>保存修改</button>{target.id || target.kind === 'image' ? <button type="button" className="demo-danger" onClick={remove}>{deleting ? '再次点击确认删除' : target.kind === 'image' ? '删除此图片' : '删除这条数据'}</button> : null}{deleting ? <button type="button" onClick={() => setDeleting(false)}>取消删除</button> : null}</div>
   </form>;
 }
