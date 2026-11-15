@@ -40,7 +40,7 @@ test('restoring defaults returns a fresh independent copy', () => {
   edited.images.example = '';
   const restored = createDefaultData();
   assert.equal(restored.loans[0].principal, 3400000);
-  assert.equal(restored.profile.name, '*用户');
+  assert.equal(restored.profile.name, '*晟');
   assert.deepEqual(restored.images, {});
 });
 
@@ -96,7 +96,7 @@ test('import discards unknown fields without mutating the source', () => {
   const saved = validateData(source);
   assert.equal('unknown' in saved, false);
   saved.profile.name = 'different';
-  assert.equal(source.profile.name, '*用户');
+  assert.equal(source.profile.name, '*晟');
 });
 
 test('formatting retains cents and handles negative amounts', () => {

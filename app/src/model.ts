@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, useEffect, type PointerEvent, type MouseEvent } from 'react';
+import { useCallback, useRef, useState, useEffect, type PointerEvent, type MouseEvent, type TouchEvent } from 'react';
 
 export type Profile = { name: string; phone: string; lastLogin: string; assets: number; liabilities: number; income: number; expense: number };
 export type Loan = { id: string; name: string; tail: string; bank: string; principal: number; available: number; rate: number; start: string; end: string };
@@ -12,7 +12,7 @@ const MAX_IMAGE_SIZE = 1_000_000;
 export function createDefaultData(): AppData {
   return {
     version: 1,
-    profile: { name: '*用户', phone: '188****0000', lastLogin: '2026-11-13 14:58:05', assets: 0.06, liabilities: 3400000, income: 194702.36, expense: 314612.26 },
+    profile: { name: '*晟', phone: '188****4990', lastLogin: '2026-11-13 14:58:05', assets: 0.06, liabilities: 3400000, income: 194702.36, expense: 314612.26 },
     loanSummary: { available: 200000, principal: 3400000 },
     loans: [{ id: 'loan-1', name: '丰收创业卡', tail: '9052', bank: '义乌农商银行', principal: 3400000, available: 200000, rate: 2.42, start: '2026-10-16', end: '2027-10-14' }],
     accounts: [
@@ -85,6 +85,8 @@ function initialState(): { data: AppData; error: string | null } {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     const data = stored ? validateData(JSON.parse(stored)) : createDefaultData();
+    if (data.profile.name === '*用户') data.profile.name = '*晟';
+    if (data.profile.phone === '188****0000') data.profile.phone = '188****4990';
     for (const transaction of data.transactions) {
       if (transaction.id === 'transaction-out' && transaction.counterparty === '演示收款人') transaction.counterparty = '收款人';
       if (transaction.id === 'transaction-in' && transaction.counterparty === '演示用户') transaction.counterparty = '用户';
@@ -129,28 +131,64 @@ export function useStore() {
   return { data: state.data, error: state.error, update, reset, importData, exportData, clearError };
 }
 
-/** A held pointer opens editing; movement, cancellation and release stop the timer. */
+/** Hold still to edit; native touch scrolling must remain free to take over. */
 export function useLongPress(callback: () => void) {
-  const state = useRef({ timer: undefined as ReturnType<typeof setTimeout> | undefined, x: 0, y: 0, fired: false, active: false });
+  const state = useRef({ timer: undefined as ReturnType<typeof setTimeout> | undefined, x: 0, y: 0, fired: false, moved: false, active: false, input: 'pointer' as 'pointer' | 'touch' });
   const latest = useRef(callback); latest.current = callback;
   const cancel = useCallback(() => { clearTimeout(state.current.timer); state.current.timer = undefined; state.current.active = false; }, []);
-  useEffect(() => cancel, [cancel]);
+  useEffect(() => {
+    const onScroll = () => { if (state.current.active) { state.current.moved = true; cancel(); } };
+    const onMultiTouch = (event: globalThis.TouchEvent) => { if (event.touches.length !== 1) { state.current.moved = true; cancel(); } };
+    document.addEventListener('touchstart', onMultiTouch, { capture: true, passive: true });
+    document.addEventListener('scroll', onScroll, true);
+    window.addEventListener('blur', cancel);
+    return () => { cancel(); document.removeEventListener('touchstart', onMultiTouch, true); document.removeEventListener('scroll', onScroll, true); window.removeEventListener('blur', cancel); };
+  }, [cancel]);
+  const ownsTarget = (event: { target: EventTarget; currentTarget: HTMLElement }) => event.target instanceof Element && event.target.closest('[data-long-press]') === event.currentTarget;
+  const begin = (x: number, y: number, input: 'pointer' | 'touch') => {
+    cancel();
+    state.current = { timer: undefined, x, y, fired: false, moved: false, active: true, input };
+    state.current.timer = setTimeout(() => {
+      if (!state.current.active) return;
+      state.current.fired = true; state.current.active = false; latest.current();
+    }, 600);
+  };
+  const move = (x: number, y: number) => {
+    if (Math.hypot(x - state.current.x, y - state.current.y) > 12) { state.current.moved = true; cancel(); }
+  };
   return {
     'data-long-press': 'true',
-    onPointerDown: (event: PointerEvent<HTMLElement>) => {
-      // A nested image editor takes precedence without preventing its scroll parent.
-      if (event.target instanceof Element && event.target.closest('[data-long-press]') !== event.currentTarget) return;
-      if (event.button !== 0 || !event.isPrimary) return;
-      cancel();
-      state.current = { timer: undefined, x: event.clientX, y: event.clientY, fired: false, active: true };
-      state.current.timer = setTimeout(() => { if (state.current.active) { state.current.fired = true; state.current.active = false; latest.current(); } }, 600);
+    onTouchStart: (event: TouchEvent<HTMLElement>) => {
+      if (!ownsTarget(event)) return;
+      if (event.touches.length !== 1) { state.current.moved = true; cancel(); return; }
+      const touch = event.touches[0]; begin(touch.clientX, touch.clientY, 'touch');
     },
-    onPointerMove: (event: PointerEvent<HTMLElement>) => { if (Math.hypot(event.clientX - state.current.x, event.clientY - state.current.y) > 10) cancel(); },
-    onPointerUp: cancel,
-    onPointerLeave: cancel,
-    onPointerCancel: cancel,
-    onContextMenu: (event: MouseEvent<HTMLElement>) => { event.preventDefault(); event.stopPropagation(); cancel(); state.current.fired = true; latest.current(); },
-    onClickCapture: (event: MouseEvent<HTMLElement>) => { if (state.current.fired) { event.preventDefault(); event.stopPropagation(); state.current.fired = false; } },
+    onTouchMove: (event: TouchEvent<HTMLElement>) => {
+      if (!ownsTarget(event) || state.current.input !== 'touch') return;
+      if (event.touches.length !== 1) { state.current.moved = true; cancel(); return; }
+      const touch = event.touches[0]; move(touch.clientX, touch.clientY);
+    },
+    onTouchEnd: cancel,
+    onTouchCancel: () => { state.current.moved = true; cancel(); },
+    onPointerDown: (event: PointerEvent<HTMLElement>) => {
+      if (!ownsTarget(event) || event.pointerType === 'touch') return;
+      state.current.input = 'pointer';
+      if (event.button !== 0 || !event.isPrimary) { cancel(); state.current.fired = false; state.current.moved = false; return; }
+      begin(event.clientX, event.clientY, 'pointer');
+    },
+    onPointerMove: (event: PointerEvent<HTMLElement>) => { if (state.current.input === 'pointer') move(event.clientX, event.clientY); },
+    onPointerUp: () => { if (state.current.input === 'pointer') cancel(); },
+    onPointerLeave: () => { if (state.current.input === 'pointer') cancel(); },
+    onPointerCancel: () => { if (state.current.input === 'pointer') { state.current.moved = true; cancel(); } },
+    onContextMenu: (event: MouseEvent<HTMLElement>) => {
+      if (!ownsTarget(event)) return;
+      event.preventDefault(); event.stopPropagation();
+      if (state.current.input === 'touch' || state.current.fired || state.current.moved) return;
+      cancel(); state.current.fired = true; latest.current();
+    },
+    onClickCapture: (event: MouseEvent<HTMLElement>) => {
+      if (ownsTarget(event) && (state.current.fired || state.current.moved)) { event.preventDefault(); event.stopPropagation(); }
+    },
   };
 }
 

@@ -57,3 +57,11 @@ APK 已验证签名及打包内容；IPA 已验证 ZIP CRC、Info.plist、iphone
 ## v1.2.1 登录页文案
 
 登录页协议名称改为《使用说明》，删除协议下方的登录信息使用说明。对应原生版本为 1.2.1 (4)，包内核验以 artifacts 下的 v1.2.1 验证记录为准。
+
+## v1.3 原生 iOS 交互修复
+
+原生入口使用 CSS 单一安全区处理（ios.contentInset=never）、明确的滚动视口和完整底栏高度，保留首页/金服/贷款/生活/我的五个文字标签。“我的”资料区按用户第四张裁剪图使用暖金文字、姓名 *晟、188****4990、福利中心按钮；只有未修改的旧默认字段自动迁移，自定义数据保留。
+
+长按约 600ms 进入编辑，12px 内小幅抖动容忍；TouchEvent 与鼠标 PointerEvent 分开处理，滚动/取消/多指取消待触发长按，嵌套编辑与释放点击去重。原生编辑区域禁用系统文本选择及图片 callout，输入框仍可选字；打开编辑器时背景滚动冻结。
+
+新增 app/tests/native-interactions.spec.ts 专测 native.html。本机 Edge/Chromium 已通过 9 项（含 CDP 真实触摸注入），macOS 打包流程增加 WebKit 检查（8 项及一项仅 Chromium 支持的触摸注入跳过）。WebKit 检查结果及原生包来源以本次 Actions 运行和 artifacts/package-manifest-v1.3.json 为准；这些检查不等同于 iPhone 真机安装复测。
