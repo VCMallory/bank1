@@ -76,3 +76,5 @@ When any text-entry control loses focus, dismiss the simulated keyboard. If the 
 
 - 资产、智能账单标题旁不显示“数据仅供参考”文字，保留详情入口及无障碍名称。
 - 应用安装名称使用“丰收互联”，启动图标参考用户上传的白底蓝绿多边形圆形河流图。
+
+- 登录页协议名称使用《使用说明》，不显示“登录信息仅在本机使用，不会发送或保存。”这行补充文字。
