@@ -1,0 +1,52 @@
+# Design QA
+
+## Comparison target
+
+User-supplied screenshot set, especially accounts (`codex-clipboard-f38e4229-5314-49f5-91c3-aa4b244fea80.png`), detail (`codex-clipboard-d6500047-5c37-4599-9b4a-02d9fed5b81c.jpg`), and profile (`codex-clipboard-cbce4887-b6db-42fb-9897-fe2ae5274f1d.jpg`) under C:/Users/cpp/AppData/Local/Temp/.
+
+Implementation: browser-rendered http://localhost:4173/, with device screen measured at 393 × 852 CSS pixels, density 1. The browser viewport was 1400 × 1100 for unscaled capture; screenshot clip was the device screen only. Source images were normalized from 1290 × 2796 or 1280 × 2774 pixels to 393 × 852. The source is an iOS screenshot without a hardware cutout; the template preserves its device chrome, live clock and home indicator.
+
+Evidence is in artifacts/qa/: accounts-final.jpg, detail-final.jpg, mine-final.jpg, home-final.jpg, finance-final.jpg. Full-view side-by-side comparisons: accounts-comparison-final.jpg, detail-comparison-final.jpg, mine-comparison-final.jpg. Native full-screen entry: native-home.jpg and native-loan.jpg at approximately 393 × 852 CSS pixels (browser reports 394 px after viewport rounding). No horizontal document overflow or broken images in tested native routes.
+
+## Findings and fixes
+
+1. P1, preview only: focusing bottom navigation could scroll the outer device screen and reveal a translated closed keyboard. Fixed by clipping transformed overflow in prototype.css without modifying protected runtime files. Rechecked device screen scrollTop=0 and runtime integrity passed.
+2. P2, account cards: account typography and row heights were too large. Reduced bank and number text, balance padding, action-row padding; replaced two service icons with extracted matching assets. Post-fix comparison: accounts-comparison-final.jpg.
+3. P2, transaction detail: hero amount and detail-row rhythm were too large. Reduced amount from 32 to 28px and detail-row text/padding; rechecked detail-comparison-final.jpg.
+4. P1, preview only: simulated keyboard remained after demo login. Added an app-owned navigation callback to hide it before route/tab/login changes. Reloaded, logged in, switched routes and verified keyboard=false. The native entry does not use the simulated keyboard.
+5. P2, data robustness: guarded login storage access; included transaction months in filter choices; image edits now share one account-image source. Type checking and data tests passed.
+
+## Required fidelity surfaces
+
+- Typography: Chinese system font stack, matched hierarchy and amount formatting. Windows and iOS font rendering differ slightly; source screenshots are not a guarantee of pixel-identical text rendering.
+- Spacing/layout: main five-tab order, white cards, gold/red/blue headers, account actions, loan expansion and detail rows compared at normalized density. The device shell is intentionally retained.
+- Colors/tokens: gold #bd9d59, red #db2b26, teal transaction outflow and blue liability styling follow the references. Source raster assets are reused.
+- Image quality: 70 supplied-source assets, crops recorded in app/public/assets/reference/assets-manifest.json. No red annotations rendered. File upload replacement and restoration verified, including persistence after reload.
+- Copy/content: private names/phone replaced with demo values; persistent demo badge and help entry are intentional. Core account/loan/transaction labels follow the references.
+
+P3 follow-up: some decorative payment-card illustrations, header controls and minor spacing are simplified; security icons obscured in the source are represented with library icons. This is a usable demonstration replica, not a claim of literal pixel-for-pixel identity.
+
+## Browser interaction evidence
+
+- Home → loan → my loans → expand/collapse → borrowing records → repay demonstration.
+- Saved loan principal 1,234,500.00, reloaded and verified persistence, then restored defaults.
+- My → asset/bill visibility toggles → accounts → account details → transaction detail.
+- October two records, November empty, added test transaction 88.88, edited and deleted through the confirmation UI.
+- Held an account balance for 850ms; account edit dialog appeared.
+- Selected local image through file chooser, saved, reloaded, verified data URL persisted, restored original.
+- Demo login form and consent control completed; no password stored.
+- Native entry account editing 0.06 → 0.08 → 0.06 verified.
+- Browser error logs checked: no errors in final tested routes.
+
+## Checks
+
+- TypeScript: passed.
+- Data validation tests: 12 passed.
+- Protected mobile runtime integrity: 28 files passed.
+- Native web build: passed.
+- Android APK: built and signature/content verified; no Android emulator or real-device run available.
+- iOS: macOS GitHub Actions built iphoneos arm64 unsigned IPA; package and binary validation passed; no iPhone installation test.
+
+All identified P1/P2 functional and layout defects above were fixed. P3 differences and deliberate demonstration constraints are recorded, so this pass accepts the local demonstration scope, not strict pixel identity.
+
+final result: passed
